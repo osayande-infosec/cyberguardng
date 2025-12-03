@@ -1,7 +1,7 @@
 [build]
   base = "react-site"
   command = "npm ci && npm run build"
-  publish = "react-site/dist"
+  publish = "dist"
 
 [build.environment]
   NODE_VERSION = "18"
