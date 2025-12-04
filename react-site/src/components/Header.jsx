@@ -40,9 +40,11 @@ export default function Header() {
           <Link to="/" onClick={closeMenu} style={{textDecoration: 'none', color: 'inherit'}}>
             <div className="logo">
               <img src="/assets/cyberguard-logo.png" alt="CyberGuardNG Logo" className="logo-img" />
-              CYBERGUARDNG SECURITY INC.
             </div>
-            <div className="tagline">Modern Cybersecurity for Growing Businesses</div>
+            <div className="brand-text">
+              <div className="brand-name">CYBERGUARDNG SECURITY INC.</div>
+              <div className="tagline">Modern Cybersecurity for Growing Businesses</div>
+            </div>
           </Link>
         </div>
         <button
