@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://boisterous-faloodeh-f59c6a.netlify.app/sitemap.xml
