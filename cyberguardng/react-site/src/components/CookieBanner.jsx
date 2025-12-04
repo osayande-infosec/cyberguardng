@@ -58,7 +58,7 @@ export default function CookieBanner() {
 
   function logConsentToBackend(consentObj) {
     // Optional: Send to your backend for audit/compliance
-    fetch("/.netlify/functions/consent-log", {
+    fetch("/functions/consent-log", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
