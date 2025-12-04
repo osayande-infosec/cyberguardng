@@ -1,11 +1,37 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
+  const navRef = useRef(null);
 
   const closeMenu = () => setOpen(false);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (open && navRef.current && !navRef.current.contains(event.target)) {
+        const menuToggle = document.querySelector('.menu-toggle');
+        if (!menuToggle?.contains(event.target)) {
+          closeMenu();
+        }
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+    
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, [open]);
+
+  // Close menu on route change
+  useEffect(() => {
+    closeMenu();
+  }, [pathname]);
 
   return (
     <header className="site-header">
@@ -23,7 +49,7 @@ export default function Header() {
         >
           ☰
         </button>
-        <nav className={`nav ${open ? "open" : ""}`} aria-label="Primary navigation">
+        <nav className={`nav ${open ? "open" : ""}`} aria-label="Primary navigation" ref={navRef}>
           <Link to="/" onClick={closeMenu} aria-current={pathname === "/" ? "page" : undefined}>Home</Link>
           <Link to="/about" onClick={closeMenu} aria-current={pathname === "/about" ? "page" : undefined}>About</Link>
           <Link to="/services" onClick={closeMenu} aria-current={pathname === "/services" ? "page" : undefined}>Services</Link>
