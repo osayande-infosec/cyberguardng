@@ -107,6 +107,7 @@ h3{font-size:1rem}
   position:relative;
   min-height:72vh;
   display:flex;
+  flex-direction:column;
   align-items:center;
   justify-content:center;
   text-align:center;
@@ -209,6 +210,10 @@ h3{font-size:1rem}
     position:static;
     max-width:100%;
     margin-top:1.5rem;
+    order:2;
+  }
+  .hero-grid{
+    order:1;
   }
 }
 .hero-panel h3{
