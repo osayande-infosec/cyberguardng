@@ -54,12 +54,6 @@ h3{font-size:1rem}
 }
 .brand{
   display:flex;
-  flex-direction:row;
-  gap:.75rem;
-  align-items:center
-}
-.logo{
-  display:flex;
   align-items:center
 }
 .logo-img{
