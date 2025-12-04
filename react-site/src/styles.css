@@ -60,7 +60,14 @@ h3{font-size:1rem}
 .logo{
   font-size:.9rem;
   letter-spacing:.18em;
-  text-transform:uppercase
+  text-transform:uppercase;
+  display:flex;
+  align-items:center;
+  gap:.5rem
+}
+.logo-img{
+  height:32px;
+  width:auto
 }
 .tagline{font-size:.75rem;color:var(--muted)}
 .nav{
