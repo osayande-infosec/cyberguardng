@@ -396,6 +396,9 @@ h3{font-size:1rem}
 }
 @media(max-width:768px){
   .site-header-inner{padding:.65rem 0}
+  .brand{max-width:70%}
+  .logo{font-size:.75rem;line-height:1.3}
+  .tagline{font-size:.7rem}
   .menu-toggle{display:block}
   .nav{
     position:absolute;
@@ -407,15 +410,29 @@ h3{font-size:1rem}
     transform:translateY(-130%);
     opacity:0;
     pointer-events:none;
-    transition:.18s ease
+    transition:.25s ease;
+    box-shadow:0 4px 12px rgba(0,0,0,0.3)
   }
   .nav.open{
     transform:translateY(0);
     opacity:1;
     pointer-events:auto
   }
-  .hero-title{font-size:2.1rem}
-  .hero-subtitle{max-width:none}
+  .nav a{
+    padding:0.75rem 1.5rem;
+    border-bottom:none;
+    width:100%;
+    text-align:center
+  }
+  .nav a:hover{
+    background:rgba(56,189,248,0.1)
+  }
+  .hero-title{font-size:1.8rem;line-height:1.2}
+  .hero-subtitle{max-width:none;font-size:.9rem}
+  .card-grid{grid-template-columns:1fr;gap:1.2rem}
+  .section{padding:2.5rem 0}
+  h2{font-size:1.3rem}
+  h3{font-size:.95rem}
 }
 
 
