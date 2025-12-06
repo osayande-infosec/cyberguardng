@@ -676,6 +676,70 @@ h3{font-size:1rem}
   box-shadow:0 20px 40px rgba(6,182,212,.35);
 }
 
+/* chat contact form */
+.chat-contact-form{
+  background:#f8fafc;
+  border-radius:12px;
+  padding:1rem;
+  margin:0.5rem 0;
+  border:1px solid #e2e8f0
+}
+.chat-contact-form .form-group{
+  margin-bottom:0.8rem
+}
+.chat-contact-form input,
+.chat-contact-form textarea{
+  width:100%;
+  padding:0.6rem;
+  border:1px solid #cbd5e1;
+  border-radius:8px;
+  font-size:0.85rem;
+  font-family:inherit;
+  box-sizing:border-box
+}
+.chat-contact-form input:focus,
+.chat-contact-form textarea:focus{
+  outline:none;
+  border-color:#2563eb
+}
+.chat-contact-form textarea{
+  resize:vertical;
+  min-height:60px
+}
+.chat-contact-form .form-submit{
+  background:linear-gradient(135deg,#2563eb,#06b6d4);
+  color:#fff;
+  border:none;
+  padding:0.6rem 1.2rem;
+  border-radius:8px;
+  font-size:0.85rem;
+  cursor:pointer;
+  width:100%;
+  margin-bottom:0.5rem;
+  transition:transform 0.2s ease
+}
+.chat-contact-form .form-submit:hover:not(:disabled){
+  transform:translateY(-1px)
+}
+.chat-contact-form .form-submit:disabled{
+  opacity:0.6;
+  cursor:not-allowed
+}
+.chat-contact-form .form-cancel{
+  background:#e2e8f0;
+  color:#475569;
+  border:none;
+  padding:0.5rem 1rem;
+  border-radius:8px;
+  font-size:0.85rem;
+  cursor:pointer;
+  width:100%;
+  transition:background 0.2s ease
+}
+.chat-contact-form .form-cancel:hover{
+  background:#cbd5e1
+}
+
 /* cookie banner */
 .cookie-banner{
   position:fixed;

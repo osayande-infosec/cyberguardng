@@ -6,6 +6,9 @@ export default function ChatLauncher() {
     { from: "bot", text: "Hi, I'm Yande, CyberGuardNG Assistant. How can I help you today?" },
   ]);
   const [input, setInput] = useState("");
+  const [showContactForm, setShowContactForm] = useState(false);
+  const [formData, setFormData] = useState({ name: "", email: "", company: "", message: "" });
+  const [formSubmitting, setFormSubmitting] = useState(false);
   const bodyRef = useRef(null);
 
   useEffect(() => {
@@ -55,9 +58,16 @@ export default function ChatLauncher() {
       }
 
       const data = await res.json();
-      const reply =
+      let reply =
         (data && data.reply) ||
         "I am here to help, but I could not get a response from the assistant.";
+
+      // Check if reply contains the contact form trigger
+      if (reply.includes("[SHOW_CONTACT_FORM]")) {
+        // Remove the trigger from the displayed message
+        reply = reply.replace("[SHOW_CONTACT_FORM]", "").trim();
+        setShowContactForm(true);
+      }
 
       setMessages((prev) => [
         ...prev.filter((m) => !m.temp),
@@ -72,6 +82,46 @@ export default function ChatLauncher() {
           text: err.message || "Sorry, I had trouble reaching the CyberGuardNG server. Please try again shortly.",
         },
       ]);
+    }
+  }
+
+  async function handleContactSubmit(e) {
+    e.preventDefault();
+    setFormSubmitting(true);
+
+    try {
+      const submitData = new FormData();
+      submitData.append("access_key", "deb5b1b1-8dfe-438e-b9ed-5c99aaeb8783");
+      submitData.append("name", formData.name);
+      submitData.append("email", formData.email);
+      submitData.append("company", formData.company);
+      submitData.append("message", formData.message);
+      submitData.append("subject", `Consultation Request from ${formData.name} (via Yande)`);
+
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        body: submitData,
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setMessages(prev => [
+          ...prev,
+          { from: "bot", text: "✅ Thank you! Your consultation request has been submitted. A member of our sales team will contact you within 2 business hours." },
+        ]);
+        setShowContactForm(false);
+        setFormData({ name: "", email: "", company: "", message: "" });
+      } else {
+        throw new Error("Form submission failed");
+      }
+    } catch (error) {
+      setMessages(prev => [
+        ...prev,
+        { from: "bot", text: "⚠️ There was an issue submitting your request. Please email us directly at sales@cyberguardng.ca or try again." },
+      ]);
+    } finally {
+      setFormSubmitting(false);
     }
   }
 
@@ -117,6 +167,58 @@ export default function ChatLauncher() {
                 {m.text}
               </div>
             ))}
+            
+            {showContactForm && (
+              <div className="chat-contact-form">
+                <form onSubmit={handleContactSubmit}>
+                  <div className="form-group">
+                    <input
+                      type="text"
+                      placeholder="Your Name *"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <input
+                      type="email"
+                      placeholder="Your Email *"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <input
+                      type="text"
+                      placeholder="Company"
+                      value={formData.company}
+                      onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <textarea
+                      placeholder="Tell us about your needs *"
+                      value={formData.message}
+                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                      rows="3"
+                      required
+                    />
+                  </div>
+                  <button type="submit" className="form-submit" disabled={formSubmitting}>
+                    {formSubmitting ? "Submitting..." : "Submit Request"}
+                  </button>
+                  <button 
+                    type="button" 
+                    className="form-cancel" 
+                    onClick={() => setShowContactForm(false)}
+                  >
+                    Cancel
+                  </button>
+                </form>
+              </div>
+            )}
           </div>
 
           <form className="chat-footer" onSubmit={handleSubmit}>
