@@ -11,7 +11,7 @@ export default function Home() {
   const stats = [
     { value: 10, suffix: "+", label: "Years Experience" },
     { value: 50, suffix: "+", label: "Active Clients" },
-    { value: 4, suffix: "", label: "Compliance Frameworks" },
+    { value: 8, suffix: "", label: "Compliance Frameworks" },
     { value: 99, suffix: "%", label: "Client Satisfaction" }
   ];
 

@@ -14,7 +14,7 @@ export default function About() {
   const stats = [
     { value: 10, suffix: "+", label: "Years Combined Experience" },
     { value: 50, suffix: "+", label: "Clients Served" },
-    { value: 4, suffix: "", label: "Compliance Frameworks" },
+    { value: 8, suffix: "", label: "Compliance Frameworks" },
     { value: 99, suffix: "%", label: "Client Satisfaction" }
   ];
 
