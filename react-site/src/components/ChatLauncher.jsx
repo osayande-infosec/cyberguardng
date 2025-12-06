@@ -47,11 +47,14 @@ export default function ChatLauncher() {
         }),
       });
 
+      const data = await res.json();
+
       if (!res.ok) {
-        throw new Error(`Chat function error: ${res.status}`);
+        console.error("Chat API error:", data);
+        const errorMsg = data.error || `Server error: ${res.status}`;
+        throw new Error(errorMsg);
       }
 
-      const data = await res.json();
       const reply =
         (data && data.reply) ||
         "I am here to help, but I could not get a response from the assistant.";
@@ -61,12 +64,12 @@ export default function ChatLauncher() {
         { from: "bot", text: reply },
       ]);
     } catch (err) {
-      console.error(err);
+      console.error("Chat error:", err);
       setMessages((prev) => [
         ...prev.filter((m) => !m.temp),
         {
           from: "bot",
-          text: "Sorry, I had trouble reaching the CyberGuardNG server please try again shortly.",
+          text: "Sorry, I had trouble reaching the CyberGuardNG server. Please try again shortly.",
         },
       ]);
     }
