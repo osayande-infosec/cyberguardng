@@ -48,6 +48,7 @@ export default function Home() {
     { name: "ISO 42001", icon: "🤖" },
     { name: "NIST CSF", icon: "🛡️" },
     { name: "PIPEDA", icon: "🍁" },
+    { name: "PHIPA", icon: "🏥" },
     { name: "HIPAA", icon: "⚕️" },
     { name: "PCI DSS", icon: "💳" }
   ];
