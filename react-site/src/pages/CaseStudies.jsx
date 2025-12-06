@@ -60,6 +60,52 @@ export default function CaseStudies() {
           </Link>
         </div>
       </div>
+
+      {/* Collaborative Team Section */}
+      <section className="collaborative-section">
+        <div className="container">
+          <div className="collaborative-grid">
+            <div className="collaborative-content">
+              <h2>Partnership Approach</h2>
+              <p>
+                We work alongside your team to build sustainable security practices. Our collaborative methodology 
+                ensures knowledge transfer and empowers your organization to maintain strong security posture.
+              </p>
+              <ul className="collaborative-features">
+                <li>
+                  <span className="feature-icon">🤝</span>
+                  <div>
+                    <strong>Collaborative Engagement</strong>
+                    <p>Working directly with your team members</p>
+                  </div>
+                </li>
+                <li>
+                  <span className="feature-icon">📚</span>
+                  <div>
+                    <strong>Knowledge Transfer</strong>
+                    <p>Building internal security capabilities</p>
+                  </div>
+                </li>
+                <li>
+                  <span className="feature-icon">🎯</span>
+                  <div>
+                    <strong>Tailored Solutions</strong>
+                    <p>Customized to your business needs</p>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div className="collaborative-image">
+              <div className="image-placeholder">
+                <div className="placeholder-content">
+                  <span>👥</span>
+                  <p>Collaborative Team Approach</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
   );
 }
