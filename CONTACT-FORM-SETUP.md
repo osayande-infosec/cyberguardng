@@ -1,104 +1,110 @@
 # Contact Form Setup Guide
 
 ## Overview
-The contact form uses Cloudflare Pages Functions to handle submissions and send emails via Resend API.
+The contact form uses **Cloudflare Pages Functions** with **MailChannels** (free, built into Cloudflare Workers) to send emails directly—no external API keys required!
 
 ## Setup Steps
 
-### 1. Get Resend API Key
-1. Sign up at [resend.com](https://resend.com) (free tier: 100 emails/day)
-2. Verify your domain or use their test domain
-3. Go to API Keys → Create API Key
-4. Copy your API key
+### 1. Configure Email Destination (Optional)
+By default, emails go to `sales@cyberguardng.ca`. To change:
 
-### 2. Configure Cloudflare Environment Variables
 1. Go to Cloudflare Dashboard → Pages → Your Project
 2. Navigate to **Settings** → **Environment variables**
-3. Add these variables:
-
-   **Variable 1:**
-   - Name: `EMAIL_API_KEY`
-   - Value: Your Resend API key
-   - Environment: Production (and Preview if needed)
-
-   **Variable 2:**
+3. Add variable:
    - Name: `CONTACT_EMAIL`
-   - Value: `sales@cyberguardng.ca` (or your preferred email)
+   - Value: Your preferred email address
    - Environment: Production (and Preview if needed)
-
 4. Click **Save**
 
-### 3. Deploy
+### 2. Deploy
 ```bash
 git add .
-git commit -m "Add contact form functionality"
+git commit -m "Update contact form"
 git push
 ```
 
-Cloudflare will automatically redeploy with the new function.
+Cloudflare will automatically redeploy.
 
-### 4. Test
+### 3. Test
 1. Go to your live site
 2. Navigate to Contact page
 3. Fill out and submit the form
-4. Check your email (sales@cyberguardng.ca)
+4. Check your email (sales@cyberguardng.ca or your configured address)
+
+**That's it!** No API keys, no external services, completely free.
+
+## How It Works
+
+- Uses **MailChannels** API (free partnership with Cloudflare)
+- Sends directly from Cloudflare Workers
+- Reply-to set to submitter's email
+- Professional HTML email formatting
+- Full submission details included
 
 ## Features
 
+✅ **Zero configuration** - works out of the box  
+✅ **Completely free** - no API keys or signups  
 ✅ Form validation  
 ✅ Loading states  
 ✅ Success/error messages  
-✅ Email notifications with all submission details  
+✅ Beautiful HTML email notifications  
 ✅ Newsletter opt-in tracking  
 ✅ Reply-to set to submitter's email  
-✅ Fallback logging if email not configured  
+✅ Email validation  
 
-## Alternative Email Services
+## Improving Deliverability (Optional)
 
-### SendGrid
-Replace Resend API call with:
-```javascript
-await fetch("https://api.sendgrid.com/v3/mail/send", {
-  headers: {
-    "Authorization": `Bearer ${EMAIL_API_KEY}`,
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({
-    personalizations: [{ to: [{ email: TO_EMAIL }] }],
-    from: { email: "noreply@cyberguardng.ca" },
-    subject: `New Contact: ${name}`,
-    content: [{ type: "text/html", value: htmlContent }]
-  })
-});
-```
+For best email deliverability, add **DKIM records** to your domain:
 
-### Mailgun
-```javascript
-const formData = new FormData();
-formData.append("from", "noreply@cyberguardng.ca");
-formData.append("to", TO_EMAIL);
-formData.append("subject", `New Contact: ${name}`);
-formData.append("html", htmlContent);
+### Add DNS Records (Cloudflare DNS)
+1. Go to Cloudflare Dashboard → DNS → Records
+2. Add these TXT records:
 
-await fetch(`https://api.mailgun.net/v3/${DOMAIN}/messages`, {
-  method: "POST",
-  headers: { "Authorization": `Basic ${btoa("api:" + EMAIL_API_KEY)}` },
-  body: formData
-});
-```
+**Record 1:**
+- Type: `TXT`
+- Name: `mailchannels._domainkey`
+- Content: `v=DKIM1; k=rsa; p=YOUR_PUBLIC_KEY`
+
+**Record 2:**
+- Type: `TXT`  
+- Name: `_dmarc`
+- Content: `v=DMARC1; p=none; rua=mailto:sales@cyberguardng.ca`
+
+**Record 3:**
+- Type: `TXT`
+- Name: `@`
+- Content: `v=spf1 include:relay.mailchannels.net ~all`
+
+> Note: DKIM setup is optional. Emails will work without it, but deliverability improves with proper DNS records.
 
 ## Troubleshooting
 
 **Form submits but no email received:**
+- Check spam/junk folder
 - Check Cloudflare Pages logs for errors
-- Verify EMAIL_API_KEY is set correctly
-- Check Resend dashboard for delivery status
-- Verify sender email domain is configured in Resend
+- Verify CONTACT_EMAIL is correct
+- Try submitting with a different email address
 
-**"Email service not configured" message:**
-- EMAIL_API_KEY environment variable is missing
-- Submissions are logged to console but not emailed
-- Add the API key in Cloudflare settings
+**"Failed to send email" error:**
+- Check Cloudflare Pages function logs
+- Verify your Pages deployment is active
+- Ensure the function is properly deployed
 
-**Need help?**
+**Emails going to spam:**
+- Add DKIM records (see above)
+- Use a custom domain instead of *.pages.dev
+- Ensure sender domain matches your website domain
+
+## No External Services Required!
+
+Unlike the previous setup, this version:
+- ❌ No Resend signup needed
+- ❌ No API keys to manage
+- ❌ No rate limits (beyond Cloudflare's generous free tier)
+- ✅ Completely free forever
+- ✅ Works immediately after deployment
+
+## Need Help?
+
 Contact: sales@cyberguardng.ca or +1 438 773 4590
