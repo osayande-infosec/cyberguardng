@@ -49,7 +49,16 @@ export async function onRequestPost(context) {
       body: formData,
     });
 
-    const result = await response.json();
+    let result;
+    const contentType = response.headers.get("content-type");
+    
+    if (contentType && contentType.includes("application/json")) {
+      result = await response.json();
+    } else {
+      const text = await response.text();
+      console.error("Web3Forms non-JSON response:", text);
+      result = { success: false, message: text };
+    }
 
     if (!response.ok || !result.success) {
       console.error("Web3Forms error:", result);
