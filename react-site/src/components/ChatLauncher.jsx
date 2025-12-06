@@ -95,7 +95,10 @@ export default function ChatLauncher() {
                 alt="Yande" 
                 className="chat-avatar"
               />
-              <div className="chat-avatar-label">Yande</div>
+              <div className="chat-avatar-info">
+                <div className="chat-avatar-label">Yande</div>
+                <div className="chat-avatar-tagline">Security. Compliance. Confidence.</div>
+              </div>
             </div>
             <button className="chat-close" onClick={() => setOpen(false)}>
               ✕

@@ -18,7 +18,6 @@ export default function Home() {
           <div className="hero-text">
             <div className="hero-kicker">CyberGuardNG</div>
             <h1 className="hero-title">Guarding Your Digital World</h1>
-            <p className="hero-subtitle">Security. Compliance. Confidence.</p>
             <p className="hero-subtitle">
               CyberGuardNG provides practical cybersecurity and continuous compliance for growing businesses.
               We help you stay secure and audit-ready across AWS, Azure, and Google Cloud.
