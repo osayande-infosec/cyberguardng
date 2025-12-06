@@ -15,36 +15,13 @@ export default function Home() {
     { value: 99, suffix: "%", label: "Client Satisfaction" }
   ];
 
-  const featuredServices = [
-    {
-      icon: "🛡️",
-      title: "Managed Security",
-      description: "24/7 threat monitoring and incident response for your infrastructure",
-      link: "/services"
-    },
-    {
-      icon: "📋",
-      title: "Compliance Management",
-      description: "Continuous compliance for SOC 2, ISO 27001, HIPAA, and PCI DSS",
-      link: "/services"
-    },
-    {
-      icon: "☁️",
-      title: "Cloud Security",
-      description: "Secure your AWS, Azure, and GCP environments with expert guidance",
-      link: "/services"
-    },
-    {
-      icon: "🎓",
-      title: "Security Training",
-      description: "Empower your team with practical security awareness programs",
-      link: "/services"
-    }
-  ];
-
   const trustLogos = [
     { name: "SOC 2", icon: "🔒" },
     { name: "ISO 27001", icon: "🌐" },
+    { name: "ISO 42001", icon: "🤖" },
+    { name: "NIST CSF", icon: "🛡️" },
+    { name: "PIPEDA", icon: "🍁" },
+    { name: "PHIPA", icon: "🏥" },
     { name: "HIPAA", icon: "⚕️" },
     { name: "PCI DSS", icon: "💳" }
   ];
@@ -52,18 +29,18 @@ export default function Home() {
   return (
     <main>
       <section className="hero">
-        <aside className="hero-panel hero-panel-top-right" aria-label="At a glance">
+        <Link to="/services" className="hero-panel hero-panel-top-right" aria-label="At a glance">
           <h3>At a glance</h3>
           <div className="hero-panel-row">
             <span>✓ Managed Security Operations</span>
-            <span>✓ Continuous Compliance for SOC 2, ISO 27001, HIPAA, PCI DSS</span>
+            <span>✓ Continuous Compliance for SOC 2, ISO 27001, ISO 42001, NIST, PIPEDA</span>
             <span>✓ Cloud Security for AWS, Azure, and GCP</span>
             <span>✓ Practical detection and awareness training</span>
           </div>
-        </aside>
+        </Link>
         <div className="hero-grid">
           <div className="hero-text">
-            <div className="hero-kicker">CyberGuardNG</div>
+            <div className="hero-kicker">CyberGuard Next Generation (CyberGuardNG)</div>
             <h1 className="hero-title">Guarding Your Digital World</h1>
             <p className="hero-subtitle">
               CyberGuardNG provides practical cybersecurity and continuous compliance for growing businesses.
@@ -91,26 +68,6 @@ export default function Home() {
                 </div>
                 <div className="home-stat-label">{stat.label}</div>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Featured Services */}
-      <section className="section">
-        <div className="container">
-          <div className="section-header">
-            <h2>Our Core Services</h2>
-            <p>Comprehensive security solutions tailored for growing businesses</p>
-          </div>
-          <div className="home-services-grid">
-            {featuredServices.map((service, index) => (
-              <Link key={index} to={service.link} className="home-service-card">
-                <div className="home-service-icon">{service.icon}</div>
-                <h3 className="home-service-title">{service.title}</h3>
-                <p className="home-service-desc">{service.description}</p>
-                <span className="home-service-arrow">→</span>
-              </Link>
             ))}
           </div>
         </div>
