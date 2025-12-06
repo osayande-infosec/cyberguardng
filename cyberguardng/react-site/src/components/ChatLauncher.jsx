@@ -47,14 +47,14 @@ export default function ChatLauncher() {
         }),
       });
 
-      const data = await res.json();
-
       if (!res.ok) {
+        const data = await res.json();
         console.error("Chat API error:", data);
         const errorMsg = data.error || `Server error: ${res.status}`;
         throw new Error(errorMsg);
       }
 
+      const data = await res.json();
       const reply =
         (data && data.reply) ||
         "I am here to help, but I could not get a response from the assistant.";
@@ -69,7 +69,7 @@ export default function ChatLauncher() {
         ...prev.filter((m) => !m.temp),
         {
           from: "bot",
-          text: "Sorry, I had trouble reaching the CyberGuardNG server. Please try again shortly.",
+          text: err.message || "Sorry, I had trouble reaching the CyberGuardNG server. Please try again shortly.",
         },
       ]);
     }
