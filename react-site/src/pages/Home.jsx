@@ -20,8 +20,8 @@ export default function Home() {
             <h1 className="hero-title">Guarding Your Digital World</h1>
             <p className="hero-subtitle">Security. Compliance. Confidence.</p>
             <p className="hero-subtitle">
-              CyberGuardNG delivers AI supported cybersecurity and continuous compliance for modern businesses.
-              We help you stay secure and audit ready across AWS, Azure, and Google Cloud.
+              CyberGuardNG provides practical cybersecurity and continuous compliance for growing businesses.
+              We help you stay secure and audit-ready across AWS, Azure, and Google Cloud.
             </p>
             <div className="hero-actions">
               <Link to="/contact" className="btn btn-primary">Get a Consultation</Link>
