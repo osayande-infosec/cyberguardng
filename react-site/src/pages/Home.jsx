@@ -50,7 +50,7 @@ export default function Home() {
     { name: "PIPEDA", icon: "🍁" },
     { name: "HIPAA", icon: "⚕️" },
     { name: "PCI DSS", icon: "💳" }
-  ],
+  ];
 
   return (
     <main>
