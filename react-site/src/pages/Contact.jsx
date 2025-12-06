@@ -1,6 +1,46 @@
-import React from "react";
+import React, { useState } from "react";
 
 export default function Contact() {
+  const [status, setStatus] = useState({ type: "", message: "" });
+  const [loading, setLoading] = useState(false);
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setLoading(true);
+    setStatus({ type: "", message: "" });
+
+    const formData = new FormData(e.target);
+    const data = {
+      name: formData.get("name"),
+      email: formData.get("_replyto"),
+      company: formData.get("company"),
+      message: formData.get("message"),
+      newsletter: formData.get("newsletter") === "on",
+    };
+
+    try {
+      const response = await fetch("/functions/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setStatus({ type: "success", message: result.message || "Thank you! We'll be in touch soon." });
+        e.target.reset();
+      } else {
+        setStatus({ type: "error", message: result.error || "Something went wrong. Please try again." });
+      }
+    } catch (error) {
+      console.error("Form submission error:", error);
+      setStatus({ type: "error", message: "Network error. Please try again later." });
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <main>
       <section className="section">
@@ -11,7 +51,19 @@ export default function Contact() {
           </div>
 
           <div className="contact-wrapper">
-            <form action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+            <form onSubmit={handleSubmit}>
+              {status.message && (
+                <div style={{
+                  padding: "1rem",
+                  marginBottom: "1.5rem",
+                  borderRadius: "8px",
+                  backgroundColor: status.type === "success" ? "#d4edda" : "#f8d7da",
+                  color: status.type === "success" ? "#155724" : "#721c24",
+                  border: `1px solid ${status.type === "success" ? "#c3e6cb" : "#f5c6cb"}`
+                }}>
+                  {status.message}
+                </div>
+              )}
               <div className="form-row">
                 <div className="form-group">
                   <label htmlFor="name">Name</label>
@@ -34,8 +86,8 @@ export default function Contact() {
                 <input type="checkbox" id="newsletter" name="newsletter" />
                 <label htmlFor="newsletter">Sign up for updates, insights, and occasional promotions.</label>
               </div>
-              <button type="submit" className="btn btn-primary" style={{ marginTop: "1rem" }}>
-                Send
+              <button type="submit" className="btn btn-primary" style={{ marginTop: "1rem" }} disabled={loading}>
+                {loading ? "Sending..." : "Send"}
               </button>
             </form>
 
