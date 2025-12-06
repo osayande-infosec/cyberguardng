@@ -37,12 +37,8 @@ export default function Header() {
     <header className="site-header">
       <div className="container site-header-inner">
         <div className="brand">
-          <Link to="/" onClick={closeMenu} style={{textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center', gap: '.75rem'}}>
+          <Link to="/" onClick={closeMenu} style={{textDecoration: 'none', display: 'flex', alignItems: 'center'}}>
             <img src="/assets/cyberguard-logo.png" alt="CyberGuardNG Logo" className="logo-img" />
-            <div className="brand-text">
-              <div className="brand-name">CYBERGUARDNG SECURITY INC.</div>
-              <div className="tagline">Modern Cybersecurity for Growing Businesses</div>
-            </div>
           </Link>
         </div>
         <button
