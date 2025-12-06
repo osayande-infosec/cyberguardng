@@ -96,12 +96,11 @@ export default function CaseStudies() {
               </ul>
             </div>
             <div className="collaborative-image">
-              <div className="image-placeholder">
-                <div className="placeholder-content">
-                  <span>👥</span>
-                  <p>Collaborative Team Approach</p>
-                </div>
-              </div>
+              <img 
+                src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80" 
+                alt="Team collaborating around a table in modern office" 
+                className="team-photo"
+              />
             </div>
           </div>
         </div>
