@@ -35,7 +35,7 @@ export default function ChatLauncher() {
     setMessages(prev => [...prev, thinking]);
 
     try {
-      const res = await fetch("/functions/chat", {
+      const res = await fetch("/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
