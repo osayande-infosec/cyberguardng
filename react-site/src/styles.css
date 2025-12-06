@@ -58,7 +58,8 @@ h3{font-size:1rem}
 }
 .logo-img{
   height:100px;
-  width:auto
+  width:auto;
+  filter:invert(1) brightness(1.2)
 }
 .brand-text{
   display:flex;
