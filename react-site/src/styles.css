@@ -206,7 +206,33 @@ h3{font-size:1rem}
   border-radius:18px;
   padding:1.75rem;
   border:1px solid rgba(148,163,184,.3);
-  box-shadow:var(--shadow)
+  box-shadow:var(--shadow);
+  text-decoration:none;
+  color:inherit;
+  display:block;
+  transition:all .3s ease;
+  cursor:pointer
+}
+.hero-panel:hover{
+  border-color:rgba(56,189,248,.6);
+  box-shadow:0 8px 24px rgba(0,112,243,0.25);
+  transform:translateY(-3px)
+}
+.hero-panel:active{
+  transform:translateY(-1px)
+}
+.hero-panel h3{
+  text-decoration:none
+}
+.hero-panel span{
+  text-decoration:none
+}
+.hero-ng-subtitle{
+  font-size:.85rem;
+  color:var(--accent-soft);
+  font-style:italic;
+  margin-bottom:.5rem;
+  font-weight:500
 }
 .hero-panel-top-right{
   position:absolute;
