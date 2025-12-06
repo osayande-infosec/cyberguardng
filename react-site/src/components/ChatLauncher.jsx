@@ -14,11 +14,11 @@ export default function ChatLauncher() {
     }
   }, [messages, open]);
 
-  // Auto-open chat after 2 seconds
+  // Auto-open chat after 5 seconds
   useEffect(() => {
     const timer = setTimeout(() => {
       setOpen(true);
-    }, 2000);
+    }, 5000);
     return () => clearTimeout(timer);
   }, []);
 
