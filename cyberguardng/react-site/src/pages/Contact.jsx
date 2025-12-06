@@ -10,28 +10,21 @@ export default function Contact() {
     setStatus({ type: "", message: "" });
 
     const formData = new FormData(e.target);
-    const data = {
-      name: formData.get("name"),
-      email: formData.get("_replyto"),
-      company: formData.get("company"),
-      message: formData.get("message"),
-      newsletter: formData.get("newsletter") === "on",
-    };
+    formData.append("access_key", "deb5b1b1-8dfe-438e-b9ed-5c99aaeb8783");
 
     try {
-      const response = await fetch("/contact", {
+      const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: formData,
       });
 
       const result = await response.json();
 
-      if (response.ok) {
-        setStatus({ type: "success", message: result.message || "Thank you! We'll be in touch soon." });
+      if (result.success) {
+        setStatus({ type: "success", message: "Thank you! We'll be in touch soon." });
         e.target.reset();
       } else {
-        setStatus({ type: "error", message: result.error || "Something went wrong. Please try again." });
+        setStatus({ type: "error", message: result.message || "Something went wrong. Please try again." });
       }
     } catch (error) {
       console.error("Form submission error:", error);
