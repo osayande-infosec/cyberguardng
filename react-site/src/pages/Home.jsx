@@ -45,9 +45,12 @@ export default function Home() {
   const trustLogos = [
     { name: "SOC 2", icon: "🔒" },
     { name: "ISO 27001", icon: "🌐" },
+    { name: "ISO 42001", icon: "🤖" },
+    { name: "NIST CSF", icon: "🛡️" },
+    { name: "PIPEDA", icon: "🍁" },
     { name: "HIPAA", icon: "⚕️" },
     { name: "PCI DSS", icon: "💳" }
-  ];
+  ],
 
   return (
     <main>
@@ -56,7 +59,7 @@ export default function Home() {
           <h3>At a glance</h3>
           <div className="hero-panel-row">
             <span>✓ Managed Security Operations</span>
-            <span>✓ Continuous Compliance for SOC 2, ISO 27001, HIPAA, PCI DSS</span>
+            <span>✓ Continuous Compliance for SOC 2, ISO 27001, ISO 42001, NIST, PIPEDA</span>
             <span>✓ Cloud Security for AWS, Azure, and GCP</span>
             <span>✓ Practical detection and awareness training</span>
           </div>
