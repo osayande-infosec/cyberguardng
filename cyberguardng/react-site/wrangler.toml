@@ -6,7 +6,7 @@ pages_build_output_dir = "dist"
 [[d1_databases]]
 binding = "DB"
 database_name = "cyberguardng-db"
-database_id = "YOUR_D1_DATABASE_ID" # Will be generated when you create the database
+database_id = "c44693da-0c4b-41be-a44e-177141ed1fac"
 
 # Vectorize binding for RAG
 [[vectorize]]
@@ -16,7 +16,7 @@ index_name = "cyberguardng-knowledge"
 # KV namespace for sessions and caching
 [[kv_namespaces]]
 binding = "KV"
-id = "YOUR_KV_NAMESPACE_ID" # Will be generated when you create the namespace
+id = "72620de7f0f049fca24d7cb1f64ccbb6"
 
 # Environment variables
 [vars]
