@@ -1,0 +1,27 @@
+name = "cyberguardng"
+compatibility_date = "2024-12-01"
+pages_build_output_dir = "dist"
+
+# D1 Database binding
+[[d1_databases]]
+binding = "DB"
+database_name = "cyberguardng-db"
+database_id = "YOUR_D1_DATABASE_ID" # Will be generated when you create the database
+
+# Vectorize binding for RAG
+[[vectorize]]
+binding = "VECTORIZE"
+index_name = "cyberguardng-knowledge"
+
+# KV namespace for sessions and caching
+[[kv_namespaces]]
+binding = "KV"
+id = "YOUR_KV_NAMESPACE_ID" # Will be generated when you create the namespace
+
+# Environment variables
+[vars]
+ENVIRONMENT = "production"
+
+# Secrets (set via wrangler secret put)
+# OPENAI_API_KEY - already set
+# WEB3FORMS_ACCESS_KEY - already set

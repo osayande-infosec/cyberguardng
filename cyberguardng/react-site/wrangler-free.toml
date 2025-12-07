@@ -1,0 +1,22 @@
+name = "cyberguardng"
+compatibility_date = "2024-01-01"
+pages_build_output_dir = "dist"
+
+# D1 Database (FREE - 10GB, 5M reads/day, 100k writes/day)
+[[d1_databases]]
+binding = "DB"
+database_name = "cyberguardng_db"
+database_id = "" # Fill this after: wrangler d1 create cyberguardng_db
+
+# KV for Sessions (FREE - 100k reads/day, 1k writes/day)
+[[kv_namespaces]]
+binding = "KV"
+id = "" # Fill this after: wrangler kv:namespace create "SESSIONS"
+
+# Environment Variables
+[vars]
+SITE_URL = "https://cyberguardng.pages.dev"
+
+# Secrets (set via: wrangler secret put OPENAI_API_KEY)
+# OPENAI_API_KEY = "sk-..." (set via CLI)
+# WEB3FORMS_ACCESS_KEY = "..." (set via CLI)
