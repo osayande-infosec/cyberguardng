@@ -13,10 +13,11 @@ export default function ChatLauncher() {
   const bodyRef = useRef(null);
 
   const suggestedQuestions = [
-    "What's the difference between SOC 2 Type I and Type II?",
-    "How much does ISO 27001 certification cost?",
-    "What's your implementation timeline?",
-    "Do you offer HIPAA compliance services?"
+    "Can you help assess my company's security posture?",
+    "What cybersecurity services do you offer?",
+    "How do I know which compliance framework I need?",
+    "How long does it take to get audit-ready?",
+    "How do I book a consultation?"
   ];
 
   useEffect(() => {
@@ -39,6 +40,24 @@ export default function ChatLauncher() {
     if (!text) return;
 
     setShowSuggestions(false); // Hide suggestions after first message
+    
+    // Check if asking about booking/consultation - show form immediately
+    if (text.toLowerCase().includes('book') || 
+        text.toLowerCase().includes('consultation') ||
+        text.toLowerCase().includes('contact') ||
+        text.toLowerCase().includes('schedule')) {
+      const userMsg = { from: "user", text };
+      setMessages(prev => [...prev, userMsg]);
+      setInput("");
+      
+      setMessages(prev => [
+        ...prev,
+        { from: "bot", text: "I'd be happy to help you schedule a consultation! Please fill out this quick form and our team will reach out shortly." }
+      ]);
+      setShowContactForm(true);
+      return;
+    }
+    
     const userMsg = { from: "user", text };
     setMessages(prev => [...prev, userMsg]);
     setInput("");
