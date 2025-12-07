@@ -108,7 +108,7 @@ export default function ChatLauncher() {
       if (result.success) {
         setMessages(prev => [
           ...prev,
-          { from: "bot", text: "✅ Thank you! Your consultation request has been submitted. A member of our sales team will contact you within 2 business hours." },
+          { from: "bot", text: "✅ Thank you! Your consultation request has been submitted. A member of our sales team will contact you shortly." },
         ]);
         setShowContactForm(false);
         setFormData({ name: "", email: "", company: "", message: "" });

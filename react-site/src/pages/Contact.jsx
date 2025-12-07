@@ -97,7 +97,7 @@ export default function Contact() {
                 .
               </p>
               <p style={{ fontSize: ".8rem", color: "var(--muted)" }}>
-                We typically respond to inquiries within 2 business hours during weekdays.
+                We typically respond to inquiries shortly during weekdays.
               </p>
             </div>
           </div>
