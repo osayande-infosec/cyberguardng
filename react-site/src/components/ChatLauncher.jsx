@@ -7,9 +7,17 @@ export default function ChatLauncher() {
   ]);
   const [input, setInput] = useState("");
   const [showContactForm, setShowContactForm] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(true);
   const [formData, setFormData] = useState({ name: "", email: "", company: "", message: "" });
   const [formSubmitting, setFormSubmitting] = useState(false);
   const bodyRef = useRef(null);
+
+  const suggestedQuestions = [
+    "What's the difference between SOC 2 Type I and Type II?",
+    "How much does ISO 27001 certification cost?",
+    "What's your implementation timeline?",
+    "Do you offer HIPAA compliance services?"
+  ];
 
   useEffect(() => {
     if (bodyRef.current) {
@@ -30,6 +38,7 @@ export default function ChatLauncher() {
     const text = input.trim();
     if (!text) return;
 
+    setShowSuggestions(false); // Hide suggestions after first message
     const userMsg = { from: "user", text };
     setMessages(prev => [...prev, userMsg]);
     setInput("");
@@ -83,6 +92,16 @@ export default function ChatLauncher() {
         },
       ]);
     }
+  }
+
+  function handleSuggestionClick(question) {
+    setInput(question);
+    setShowSuggestions(false);
+    // Auto-submit the question
+    setTimeout(() => {
+      const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
+      document.querySelector('.chat-footer').dispatchEvent(submitEvent);
+    }, 100);
   }
 
   async function handleContactSubmit(e) {
@@ -167,6 +186,21 @@ export default function ChatLauncher() {
                 {m.text}
               </div>
             ))}
+            
+            {showSuggestions && messages.length === 1 && (
+              <div className="chat-suggestions">
+                <div className="suggestions-label">Quick questions:</div>
+                {suggestedQuestions.map((question, idx) => (
+                  <button
+                    key={idx}
+                    className="suggestion-button"
+                    onClick={() => handleSuggestionClick(question)}
+                  >
+                    {question}
+                  </button>
+                ))}
+              </div>
+            )}
             
             {showContactForm && (
               <div className="chat-contact-form">

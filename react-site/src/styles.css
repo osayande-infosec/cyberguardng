@@ -639,6 +639,42 @@ h3{font-size:1rem}
   padding:1rem 1.1rem;
   font-size:.9rem;
 }
+
+/* suggested questions */
+.chat-suggestions{
+  display:flex;
+  flex-direction:column;
+  gap:0.6rem;
+  margin:1rem 0.5rem;
+  animation:fadeIn 0.4s ease;
+}
+.suggestions-label{
+  font-size:0.75rem;
+  color:rgba(148,163,184,.85);
+  font-weight:500;
+  margin-bottom:0.2rem;
+  text-transform:uppercase;
+  letter-spacing:0.5px;
+}
+.suggestion-button{
+  background:rgba(15,23,42,0.8);
+  border:1px solid rgba(56,189,248,0.25);
+  color:#e2e8f0;
+  padding:0.7rem 1rem;
+  border-radius:10px;
+  font-size:0.82rem;
+  text-align:left;
+  cursor:pointer;
+  transition:all 0.2s ease;
+  line-height:1.4;
+}
+.suggestion-button:hover{
+  background:rgba(15,23,42,0.95);
+  border-color:rgba(56,189,248,0.5);
+  transform:translateX(4px);
+  box-shadow:0 4px 12px rgba(37,99,235,0.2);
+}
+
 .chat-footer{
   display:flex;
   gap:.6rem;
