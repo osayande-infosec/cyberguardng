@@ -50,14 +50,14 @@ h3{font-size:1rem}
   display:flex;
   align-items:center;
   justify-content:space-between;
-  padding:.75rem 0
+  padding:.5rem 0
 }
 .brand{
   display:flex;
   align-items:center
 }
 .logo-img{
-  height:60px;
+  height:50px;
   width:auto
 }
 .brand-text{
@@ -66,13 +66,13 @@ h3{font-size:1rem}
   gap:.15rem
 }
 .brand-name{
-  font-size:.9rem;
-  letter-spacing:.18em;
+  font-size:.85rem;
+  letter-spacing:.16em;
   text-transform:uppercase;
   line-height:1.2;
   color:#fff
 }
-.tagline{font-size:.75rem;color:var(--muted)}
+.tagline{font-size:.7rem;color:var(--muted)}
 .nav{
   display:flex;
   gap:1.5rem;
