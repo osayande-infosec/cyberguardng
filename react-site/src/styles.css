@@ -43,8 +43,7 @@ h3{font-size:1rem}
   top:0;
   z-index:50;
   background:#060C26;
-  backdrop-filter:blur(14px);
-  border-bottom:1px solid rgba(15,23,42,.8)
+  border-bottom:1px solid #060C26
 }
 .site-header-inner{
   display:flex;
@@ -58,7 +57,8 @@ h3{font-size:1rem}
 }
 .logo-img{
   height:60px;
-  width:auto
+  width:auto;
+  min-width:120px
 }
 .brand-text{
   display:flex;
