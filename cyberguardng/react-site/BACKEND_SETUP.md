@@ -27,31 +27,16 @@ database_id = "YOUR_ACTUAL_ID_HERE"
 wrangler d1 execute cyberguardng-db --file=schema.sql --remote
 ```
 
-## Step 3: Create Vectorize Index
-
-```powershell
-# Create vector index for RAG (1536 dimensions for OpenAI embeddings)
-wrangler vectorize create cyberguardng-knowledge --dimensions=1536 --metric=cosine
-```
-
-## Step 4: Create KV Namespace
+## Step 3: Create KV Namespace
 
 ```powershell
 # Create KV namespace for sessions
-wrangler kv:namespace create "KV"
+wrangler kv namespace create KV
 ```
 
 Copy the namespace ID and update `wrangler.toml`.
 
-## Step 5: Populate Vector Database
-
-```powershell
-# Run the setup script to embed knowledge base content
-wrangler pages functions build
-node scripts/populate-vectors.js
-```
-
-## Step 6: Deploy
+## Step 4: Deploy
 
 ```powershell
 # Deploy with new bindings
@@ -67,16 +52,15 @@ git push
 ## Verify Deployment
 
 1. Check Cloudflare Dashboard > D1 > cyberguardng-db
-2. Check Vectorize > cyberguardng-knowledge
-3. Check KV > Your namespace
-4. Test chatbot on live site
+2. Check KV > Your namespace
+3. Test chatbot on live site
 
 ## What This Enables
 
-### 1. Knowledge Base (RAG)
-- Semantic search through company docs
-- Accurate answers to specific questions
-- Update content without redeployment
+### 1. Knowledge Base (Keyword Search)
+- Fast keyword search through company docs
+- FAQ-style answers
+- 100% FREE - no AI costs
 
 ### 2. Lead Management
 - Track all contact form submissions

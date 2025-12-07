@@ -8,11 +8,6 @@ binding = "DB"
 database_name = "cyberguardng-db"
 database_id = "c44693da-0c4b-41be-a44e-177141ed1fac"
 
-# Vectorize binding for RAG
-[[vectorize]]
-binding = "VECTORIZE"
-index_name = "cyberguardng-knowledge"
-
 # KV namespace for sessions and caching
 [[kv_namespaces]]
 binding = "KV"
