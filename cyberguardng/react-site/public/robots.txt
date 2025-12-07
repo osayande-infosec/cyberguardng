@@ -1,0 +1,35 @@
+# CyberGuardNG Security Inc. - Robots.txt
+# Allow all search engines to crawl the site
+
+User-agent: *
+Allow: /
+
+# Disallow crawling of API endpoints
+Disallow: /api/
+Disallow: /functions/
+
+# Disallow crawling of admin areas (if any)
+Disallow: /admin/
+
+# Allow specific pages for better indexing
+Allow: /about
+Allow: /services
+Allow: /resources
+Allow: /case-studies
+Allow: /contact
+
+# Sitemap location (update after creating sitemap)
+Sitemap: https://cyberguardng.pages.dev/sitemap.xml
+
+# Crawl-delay for polite crawling (optional)
+# Crawl-delay: 1
+
+# Specific instructions for major search engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
