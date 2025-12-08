@@ -143,8 +143,8 @@ export default function Contact() {
                   sales@cyberguardng.ca
                 </a>
                 {" "}or{" "}
-                <a href="tel:+14387734590" style={{ color: "var(--accent)", fontWeight: "600", textDecoration: "none" }}>
-                  +1 438 773 4590
+                <a href="tel:+16476950950" style={{ color: "var(--accent)", fontWeight: "600", textDecoration: "none" }}>
+                  +1 647 695 0950
                 </a>
                 .
               </p>
