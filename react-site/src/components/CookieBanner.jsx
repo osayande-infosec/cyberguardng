@@ -58,7 +58,7 @@ export default function CookieBanner() {
 
   function logConsentToBackend(consentObj) {
     // Optional: Send to your backend for audit/compliance
-    fetch("/functions/consent-log", {
+    fetch("/consent-log", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
