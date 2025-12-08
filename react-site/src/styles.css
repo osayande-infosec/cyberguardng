@@ -393,16 +393,30 @@ h3{font-size:1rem}
 .footer-inner{
   display:flex;
   justify-content:space-between;
-  align-items:center;
-  gap:1rem;
+  align-items:flex-start;
+  gap:2rem;
   flex-wrap:wrap;
   font-size:.82rem;
+  color:var(--muted)
+}
+.footer-section{
+  display:flex;
+  flex-direction:column;
+  gap:0.8rem
+}
+.footer-brand{
+  font-weight:500;
+  color:var(--text)
+}
+.footer-copyright{
+  font-size:.75rem;
   color:var(--muted)
 }
 .footer-links{
   display:flex;
   gap:1rem;
-  flex-wrap:wrap
+  flex-wrap:wrap;
+  margin-bottom:0.5rem
 }
 .footer-links a{
   color:var(--muted);
@@ -410,6 +424,32 @@ h3{font-size:1rem}
   font-size:.82rem
 }
 .footer-links a:hover{color:var(--accent)}
+.footer-social{
+  display:flex;
+  gap:0.8rem;
+  align-items:center
+}
+.footer-social a{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:36px;
+  height:36px;
+  border-radius:8px;
+  background:rgba(56,189,248,0.1);
+  border:1px solid rgba(56,189,248,0.2);
+  text-decoration:none;
+  transition:all 0.2s ease
+}
+.footer-social a:hover{
+  background:rgba(56,189,248,0.2);
+  border-color:rgba(56,189,248,0.4);
+  transform:translateY(-2px)
+}
+.social-icon{
+  font-size:1.2rem;
+  line-height:1
+}
 /* floating chat */
 .chat-launcher{
   position:fixed;
@@ -442,6 +482,8 @@ h3{font-size:1rem}
   .container{width:92%;padding:0 .75rem}
   .site-header-inner{padding:.65rem 0}
   .brand{max-width:70%;gap:.5rem}
+  .footer-inner{flex-direction:column;align-items:flex-start}
+  .footer-section{width:100%}
   .logo-img{height:auto;max-height:50px;max-width:100%}
   .brand-name{font-size:.75rem;line-height:1.3}
   .tagline{font-size:.7rem}
