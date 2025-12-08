@@ -17,6 +17,7 @@ export async function onRequestPost(context) {
   try {
     const body = await context.request.json();
     const { name, email, company, message, newsletter } = body;
+    const turnstileToken = body['cf-turnstile-response'];
 
     // Validate required fields
     if (!name || !email || !message) {
@@ -24,6 +25,39 @@ export async function onRequestPost(context) {
         JSON.stringify({ error: "Missing required fields" }),
         { status: 400, headers: { "Content-Type": "application/json" } }
       );
+    }
+    
+    // Verify Turnstile CAPTCHA
+    if (!turnstileToken) {
+      return new Response(
+        JSON.stringify({ error: "CAPTCHA verification required" }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
+    }
+    
+    const TURNSTILE_SECRET = context.env.TURNSTILE_SECRET_KEY;
+    if (TURNSTILE_SECRET) {
+      const turnstileResponse = await fetch(
+        'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            secret: TURNSTILE_SECRET,
+            response: turnstileToken,
+            remoteip: context.request.headers.get('CF-Connecting-IP')
+          })
+        }
+      );
+      
+      const turnstileResult = await turnstileResponse.json();
+      if (!turnstileResult.success) {
+        console.error('Turnstile verification failed:', turnstileResult);
+        return new Response(
+          JSON.stringify({ error: "CAPTCHA verification failed. Please try again." }),
+          { status: 400, headers: { "Content-Type": "application/json" } }
+        );
+      }
     }
 
     // Validate email format

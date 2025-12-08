@@ -117,7 +117,7 @@ export default function Contact() {
               <div 
                 ref={turnstileRef}
                 className="cf-turnstile" 
-                data-sitekey="0x4AAAAAAAzU3Gy_g0Y9QLhU"
+                data-sitekey="0x4AAAAAACFV98o85pvOFYlJ"
                 data-callback="onTurnstileSuccess"
                 data-theme="light"
                 style={{ marginTop: "1rem" }}
