@@ -1,6 +1,19 @@
 // Cloudflare Pages Function for Contact Form
 // Uses Web3Forms (free, no DNS setup required)
+import { rateLimit, addRateLimitHeaders } from './rate-limiter.js';
+
 export async function onRequestPost(context) {
+  // Rate limiting: 5 submissions per 10 minutes per IP
+  const rateLimitResult = await rateLimit(context, {
+    limit: 5,
+    window: 600,
+    keyPrefix: 'contact'
+  });
+  
+  if (!rateLimitResult.allowed) {
+    return rateLimitResult.response;
+  }
+  
   try {
     const body = await context.request.json();
     const { name, email, company, message, newsletter } = body;
@@ -77,13 +90,15 @@ export async function onRequestPost(context) {
 
     console.log("Email sent successfully via Web3Forms");
 
-    return new Response(
+    const response = new Response(
       JSON.stringify({
         success: true,
         message: "Thank you for contacting us! We'll get back to you within 2 business hours.",
       }),
       { status: 200, headers: { "Content-Type": "application/json" } }
     );
+    
+    return addRateLimitHeaders(response, rateLimitResult);
   } catch (err) {
     console.error("Contact form error:", err);
     return new Response(

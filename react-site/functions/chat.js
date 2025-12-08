@@ -1,5 +1,18 @@
 // Cloudflare Pages Function
+import { rateLimit, addRateLimitHeaders } from './rate-limiter.js';
+
 export async function onRequestPost(context) {
+  // Rate limiting: 10 requests per minute per IP
+  const rateLimitResult = await rateLimit(context, {
+    limit: 10,
+    window: 60,
+    keyPrefix: 'chat'
+  });
+  
+  if (!rateLimitResult.allowed) {
+    return rateLimitResult.response;
+  }
+  
   try {
     const body = await context.request.json();
     const OPENAI_API_KEY = context.env.OPENAI_API_KEY;
@@ -88,10 +101,12 @@ export async function onRequestPost(context) {
 
     console.log("Reply generated successfully");
 
-    return new Response(JSON.stringify({ reply }), {
+    const response = new Response(JSON.stringify({ reply }), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
+    
+    return addRateLimitHeaders(response, rateLimitResult);
   } catch (err) {
     console.error("Chat function error:", err);
     return new Response(

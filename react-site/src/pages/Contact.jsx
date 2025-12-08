@@ -1,16 +1,45 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 export default function Contact() {
   const [status, setStatus] = useState({ type: "", message: "" });
   const [loading, setLoading] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const turnstileRef = useRef(null);
+
+  useEffect(() => {
+    // Load Turnstile script
+    const script = document.createElement("script");
+    script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
+    script.async = true;
+    script.defer = true;
+    document.body.appendChild(script);
+
+    // Add callback function to window
+    window.onTurnstileSuccess = (token) => {
+      setTurnstileToken(token);
+    };
+
+    return () => {
+      document.body.removeChild(script);
+      delete window.onTurnstileSuccess;
+    };
+  }, []);
 
   async function handleSubmit(e) {
     e.preventDefault();
     setLoading(true);
     setStatus({ type: "", message: "" });
 
+    // Validate Turnstile token
+    if (!turnstileToken) {
+      setStatus({ type: "error", message: "Please complete the CAPTCHA verification" });
+      setLoading(false);
+      return;
+    }
+
     const formData = new FormData(e.target);
     formData.append("access_key", "deb5b1b1-8dfe-438e-b9ed-5c99aaeb8783");
+    formData.append("cf-turnstile-response", turnstileToken);
 
     try {
       const response = await fetch("https://api.web3forms.com/submit", {
@@ -23,6 +52,10 @@ export default function Contact() {
       if (result.success) {
         setStatus({ type: "success", message: "Thank you! We'll be in touch soon." });
         e.target.reset();
+        setTurnstileToken("");
+        if (window.turnstile) {
+          window.turnstile.reset(turnstileRef.current);
+        }
       } else {
         setStatus({ type: "error", message: result.message || "Something went wrong. Please try again." });
       }
@@ -79,7 +112,18 @@ export default function Contact() {
                 <input type="checkbox" id="newsletter" name="newsletter" />
                 <label htmlFor="newsletter">Sign up for updates, insights, and occasional promotions.</label>
               </div>
-              <button type="submit" className="btn btn-primary" style={{ marginTop: "1rem" }} disabled={loading}>
+              
+              {/* Cloudflare Turnstile CAPTCHA */}
+              <div 
+                ref={turnstileRef}
+                className="cf-turnstile" 
+                data-sitekey="0x4AAAAAAAzU3Gy_g0Y9QLhU"
+                data-callback="onTurnstileSuccess"
+                data-theme="light"
+                style={{ marginTop: "1rem" }}
+              ></div>
+              
+              <button type="submit" className="btn btn-primary" style={{ marginTop: "1rem" }} disabled={loading || !turnstileToken}>
                 {loading ? "Sending..." : "Send"}
               </button>
             </form>
