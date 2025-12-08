@@ -12,16 +12,26 @@ export default function Contact() {
     script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
     script.async = true;
     script.defer = true;
+    
+    script.onload = () => {
+      // Render Turnstile widget after script loads
+      if (window.turnstile && turnstileRef.current) {
+        window.turnstile.render(turnstileRef.current, {
+          sitekey: '0x4AAAAAACFV98o85pvOFYlJ',
+          callback: (token) => {
+            setTurnstileToken(token);
+          },
+          theme: 'light'
+        });
+      }
+    };
+    
     document.body.appendChild(script);
 
-    // Add callback function to window
-    window.onTurnstileSuccess = (token) => {
-      setTurnstileToken(token);
-    };
-
     return () => {
-      document.body.removeChild(script);
-      delete window.onTurnstileSuccess;
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
     };
   }, []);
 
@@ -116,11 +126,7 @@ export default function Contact() {
               {/* Cloudflare Turnstile CAPTCHA */}
               <div 
                 ref={turnstileRef}
-                className="cf-turnstile" 
-                data-sitekey="0x4AAAAAACFV98o85pvOFYlJ"
-                data-callback="onTurnstileSuccess"
-                data-theme="light"
-                style={{ marginTop: "1rem" }}
+                style={{ marginTop: "1rem", minHeight: "65px" }}
               ></div>
               
               <button type="submit" className="btn btn-primary" style={{ marginTop: "1rem" }} disabled={loading || !turnstileToken}>
