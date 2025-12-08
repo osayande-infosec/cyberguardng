@@ -7,11 +7,13 @@ export default function Contact() {
   const turnstileRef = useRef(null);
 
   useEffect(() => {
-    // Load Turnstile script
+    // Load Turnstile script with SRI
     const script = document.createElement("script");
     script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
     script.async = true;
     script.defer = true;
+    script.crossOrigin = "anonymous";
+    script.integrity = "sha384-TBbZ0IqtHQspfFNz2Pb1D3b0iLHdaWuQTrSwXVIHiPvOlJmMWtHGsKPH3xLN2fFF";
     
     script.onload = () => {
       // Render Turnstile widget after script loads
