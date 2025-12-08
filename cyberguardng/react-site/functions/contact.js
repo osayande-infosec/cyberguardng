@@ -1,9 +1,23 @@
 // Cloudflare Pages Function for Contact Form
 // Uses Web3Forms (free, no DNS setup required)
+import { rateLimit, addRateLimitHeaders } from './rate-limiter.js';
+
 export async function onRequestPost(context) {
+  // Rate limiting: 5 submissions per 10 minutes per IP
+  const rateLimitResult = await rateLimit(context, {
+    limit: 5,
+    window: 600,
+    keyPrefix: 'contact'
+  });
+  
+  if (!rateLimitResult.allowed) {
+    return rateLimitResult.response;
+  }
+  
   try {
     const body = await context.request.json();
     const { name, email, company, message, newsletter } = body;
+    const turnstileToken = body['cf-turnstile-response'];
 
     // Validate required fields
     if (!name || !email || !message) {
@@ -11,6 +25,39 @@ export async function onRequestPost(context) {
         JSON.stringify({ error: "Missing required fields" }),
         { status: 400, headers: { "Content-Type": "application/json" } }
       );
+    }
+    
+    // Verify Turnstile CAPTCHA
+    if (!turnstileToken) {
+      return new Response(
+        JSON.stringify({ error: "CAPTCHA verification required" }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
+    }
+    
+    const TURNSTILE_SECRET = context.env.TURNSTILE_SECRET_KEY;
+    if (TURNSTILE_SECRET) {
+      const turnstileResponse = await fetch(
+        'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            secret: TURNSTILE_SECRET,
+            response: turnstileToken,
+            remoteip: context.request.headers.get('CF-Connecting-IP')
+          })
+        }
+      );
+      
+      const turnstileResult = await turnstileResponse.json();
+      if (!turnstileResult.success) {
+        console.error('Turnstile verification failed:', turnstileResult);
+        return new Response(
+          JSON.stringify({ error: "CAPTCHA verification failed. Please try again." }),
+          { status: 400, headers: { "Content-Type": "application/json" } }
+        );
+      }
     }
 
     // Validate email format
@@ -77,13 +124,15 @@ export async function onRequestPost(context) {
 
     console.log("Email sent successfully via Web3Forms");
 
-    return new Response(
+    const successResponse = new Response(
       JSON.stringify({
         success: true,
         message: "Thank you for contacting us! We'll get back to you within 2 business hours.",
       }),
       { status: 200, headers: { "Content-Type": "application/json" } }
     );
+    
+    return addRateLimitHeaders(successResponse, rateLimitResult);
   } catch (err) {
     console.error("Contact form error:", err);
     return new Response(

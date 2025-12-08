@@ -23,14 +23,7 @@ export default function Footer() {
           </div>
         </div>
         
-        <div className="footer-section">
-          <div className="footer-links">
-            <a href="/">Home</a>
-            <a href="/services">Services</a>
-            <a href="/resources">Resources</a>
-            <a href="/contact">Contact</a>
-          </div>
-          
+        <div className="footer-section footer-center">
           <div className="footer-social">
             {socialLinks.map(link => (
               <a 
@@ -44,6 +37,15 @@ export default function Footer() {
                 <span className="social-icon">{link.icon}</span>
               </a>
             ))}
+          </div>
+        </div>
+        
+        <div className="footer-section footer-right">
+          <div className="footer-links">
+            <a href="/">Home</a>
+            <a href="/services">Services</a>
+            <a href="/resources">Resources</a>
+            <a href="/contact">Contact</a>
           </div>
         </div>
       </div>

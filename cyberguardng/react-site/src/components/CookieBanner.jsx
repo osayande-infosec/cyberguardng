@@ -1,15 +1,5 @@
 import React, { useEffect, useState } from "react";
 
-// Get visitor ID (same as ChatLauncher)
-function getVisitorId() {
-  let visitorId = localStorage.getItem('cyberguard_visitor_id');
-  if (!visitorId) {
-    visitorId = `visitor_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    localStorage.setItem('cyberguard_visitor_id', visitorId);
-  }
-  return visitorId;
-}
-
 export default function CookieBanner() {
   const [show, setShow] = useState(false);
   const [showPreferences, setShowPreferences] = useState(false);
@@ -67,17 +57,14 @@ export default function CookieBanner() {
   }
 
   function logConsentToBackend(consentObj) {
-    // Save to D1 database via API
-    const visitorId = getVisitorId();
-    
-    fetch("/api/consent", {
+    // Optional: Send to your backend for audit/compliance
+    fetch("/consent-log", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        visitor_id: visitorId,
-        analytics_consent: consentObj.analytics,
-        marketing_consent: consentObj.marketing,
-        preferences_consent: consentObj.functional,
+        consent: consentObj,
+        timestamp: new Date().toISOString(),
+        userAgent: navigator.userAgent,
       }),
     }).catch((err) => console.error("Could not log consent:", err));
   }

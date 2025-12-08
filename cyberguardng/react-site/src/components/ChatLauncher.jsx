@@ -1,15 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 
-// Generate unique visitor ID (stored in localStorage)
-function getVisitorId() {
-  let visitorId = localStorage.getItem('cyberguard_visitor_id');
-  if (!visitorId) {
-    visitorId = `visitor_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    localStorage.setItem('cyberguard_visitor_id', visitorId);
-  }
-  return visitorId;
-}
-
 export default function ChatLauncher() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([
@@ -17,53 +7,24 @@ export default function ChatLauncher() {
   ]);
   const [input, setInput] = useState("");
   const [showContactForm, setShowContactForm] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(true);
   const [formData, setFormData] = useState({ name: "", email: "", company: "", message: "" });
   const [formSubmitting, setFormSubmitting] = useState(false);
-  const [visitorId] = useState(getVisitorId());
-  const [sessionId, setSessionId] = useState(null);
-  const [isReturning, setIsReturning] = useState(false);
   const bodyRef = useRef(null);
+
+  const suggestedQuestions = [
+    "Can you help assess my company's security posture?",
+    "What cybersecurity services do you offer?",
+    "How do I know which compliance framework I need?",
+    "How long does it take to get audit-ready?",
+    "How do I book a consultation?"
+  ];
 
   useEffect(() => {
     if (bodyRef.current) {
       bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
     }
   }, [messages, open]);
-
-  // Initialize session on mount
-  useEffect(() => {
-    async function initSession() {
-      try {
-        const res = await fetch('/api/session', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            visitor_id: visitorId,
-            user_agent: navigator.userAgent,
-            country: 'Unknown',
-            city: 'Unknown'
-          })
-        });
-        
-        if (res.ok) {
-          const data = await res.json();
-          setSessionId(data.session_id);
-          setIsReturning(data.is_returning);
-          
-          // Update greeting for returning visitors
-          if (data.is_returning) {
-            setMessages([
-              { from: "bot", text: "Welcome back! 🎉 It's great to see you again. How can I help you today?" }
-            ]);
-          }
-        }
-      } catch (error) {
-        console.error('Session init error:', error);
-      }
-    }
-    
-    initSession();
-  }, [visitorId]);
 
   // Auto-open chat after 5 seconds
   useEffect(() => {
@@ -78,6 +39,25 @@ export default function ChatLauncher() {
     const text = input.trim();
     if (!text) return;
 
+    setShowSuggestions(false); // Hide suggestions after first message
+    
+    // Check if asking about booking/consultation - show form immediately
+    if (text.toLowerCase().includes('book') || 
+        text.toLowerCase().includes('consultation') ||
+        text.toLowerCase().includes('contact') ||
+        text.toLowerCase().includes('schedule')) {
+      const userMsg = { from: "user", text };
+      setMessages(prev => [...prev, userMsg]);
+      setInput("");
+      
+      setMessages(prev => [
+        ...prev,
+        { from: "bot", text: "I'd be happy to help you schedule a consultation! Please fill out this quick form and our team will reach out shortly." }
+      ]);
+      setShowContactForm(true);
+      return;
+    }
+    
     const userMsg = { from: "user", text };
     setMessages(prev => [...prev, userMsg]);
     setInput("");
@@ -86,13 +66,15 @@ export default function ChatLauncher() {
     setMessages(prev => [...prev, thinking]);
 
     try {
-      const res = await fetch("/api/chat-v2", {
+      const res = await fetch("/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           message: text,
-          visitor_id: visitorId,
-          session_id: sessionId,
+          history: [...messages, userMsg].map((m) => ({
+            role: m.from === "bot" ? "assistant" : "user",
+            content: m.text,
+          })),
         }),
       });
 
@@ -131,24 +113,35 @@ export default function ChatLauncher() {
     }
   }
 
+  function handleSuggestionClick(question) {
+    setInput(question);
+    setShowSuggestions(false);
+    // Auto-submit the question
+    setTimeout(() => {
+      const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
+      document.querySelector('.chat-footer').dispatchEvent(submitEvent);
+    }, 100);
+  }
+
   async function handleContactSubmit(e) {
     e.preventDefault();
     setFormSubmitting(true);
 
     try {
-      // Submit to our backend (saves to D1 + sends email)
-      const res = await fetch('/api/contact-v2', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...formData,
-          visitor_id: visitorId,
-          session_id: sessionId,
-          source: 'chat'
-        })
+      const submitData = new FormData();
+      submitData.append("access_key", "deb5b1b1-8dfe-438e-b9ed-5c99aaeb8783");
+      submitData.append("name", formData.name);
+      submitData.append("email", formData.email);
+      submitData.append("company", formData.company);
+      submitData.append("message", formData.message);
+      submitData.append("subject", `Consultation Request from ${formData.name} (via Yande)`);
+
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        body: submitData,
       });
 
-      const result = await res.json();
+      const result = await response.json();
 
       if (result.success) {
         setMessages(prev => [
@@ -158,10 +151,9 @@ export default function ChatLauncher() {
         setShowContactForm(false);
         setFormData({ name: "", email: "", company: "", message: "" });
       } else {
-        throw new Error(result.error || "Form submission failed");
+        throw new Error("Form submission failed");
       }
     } catch (error) {
-      console.error('Form submission error:', error);
       setMessages(prev => [
         ...prev,
         { from: "bot", text: "⚠️ There was an issue submitting your request. Please email us directly at sales@cyberguardng.ca or try again." },
@@ -213,6 +205,21 @@ export default function ChatLauncher() {
                 {m.text}
               </div>
             ))}
+            
+            {showSuggestions && messages.length === 1 && (
+              <div className="chat-suggestions">
+                <div className="suggestions-label">Quick questions:</div>
+                {suggestedQuestions.map((question, idx) => (
+                  <button
+                    key={idx}
+                    className="suggestion-button"
+                    onClick={() => handleSuggestionClick(question)}
+                  >
+                    {question}
+                  </button>
+                ))}
+              </div>
+            )}
             
             {showContactForm && (
               <div className="chat-contact-form">

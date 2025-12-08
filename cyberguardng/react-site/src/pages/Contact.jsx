@@ -1,16 +1,55 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 export default function Contact() {
   const [status, setStatus] = useState({ type: "", message: "" });
   const [loading, setLoading] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const turnstileRef = useRef(null);
+
+  useEffect(() => {
+    // Load Turnstile script
+    const script = document.createElement("script");
+    script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
+    script.async = true;
+    script.defer = true;
+    
+    script.onload = () => {
+      // Render Turnstile widget after script loads
+      if (window.turnstile && turnstileRef.current) {
+        window.turnstile.render(turnstileRef.current, {
+          sitekey: '0x4AAAAAACFV98o85pvOFYlJ',
+          callback: (token) => {
+            setTurnstileToken(token);
+          },
+          theme: 'light'
+        });
+      }
+    };
+    
+    document.body.appendChild(script);
+
+    return () => {
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
+    };
+  }, []);
 
   async function handleSubmit(e) {
     e.preventDefault();
     setLoading(true);
     setStatus({ type: "", message: "" });
 
+    // Validate Turnstile token
+    if (!turnstileToken) {
+      setStatus({ type: "error", message: "Please complete the CAPTCHA verification" });
+      setLoading(false);
+      return;
+    }
+
     const formData = new FormData(e.target);
     formData.append("access_key", "deb5b1b1-8dfe-438e-b9ed-5c99aaeb8783");
+    formData.append("cf-turnstile-response", turnstileToken);
 
     try {
       const response = await fetch("https://api.web3forms.com/submit", {
@@ -23,6 +62,10 @@ export default function Contact() {
       if (result.success) {
         setStatus({ type: "success", message: "Thank you! We'll be in touch soon." });
         e.target.reset();
+        setTurnstileToken("");
+        if (window.turnstile) {
+          window.turnstile.reset(turnstileRef.current);
+        }
       } else {
         setStatus({ type: "error", message: result.message || "Something went wrong. Please try again." });
       }
@@ -79,7 +122,14 @@ export default function Contact() {
                 <input type="checkbox" id="newsletter" name="newsletter" />
                 <label htmlFor="newsletter">Sign up for updates, insights, and occasional promotions.</label>
               </div>
-              <button type="submit" className="btn btn-primary" style={{ marginTop: "1rem" }} disabled={loading}>
+              
+              {/* Cloudflare Turnstile CAPTCHA */}
+              <div 
+                ref={turnstileRef}
+                style={{ marginTop: "1rem", minHeight: "65px" }}
+              ></div>
+              
+              <button type="submit" className="btn btn-primary" style={{ marginTop: "1rem" }} disabled={loading || !turnstileToken}>
                 {loading ? "Sending..." : "Send"}
               </button>
             </form>
@@ -97,7 +147,7 @@ export default function Contact() {
                 .
               </p>
               <p style={{ fontSize: ".8rem", color: "var(--muted)" }}>
-                We typically respond to inquiries within 2 business hours during weekdays.
+                We typically respond to inquiries shortly during weekdays.
               </p>
             </div>
           </div>
