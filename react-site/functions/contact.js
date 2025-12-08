@@ -124,7 +124,7 @@ export async function onRequestPost(context) {
 
     console.log("Email sent successfully via Web3Forms");
 
-    const response = new Response(
+    const successResponse = new Response(
       JSON.stringify({
         success: true,
         message: "Thank you for contacting us! We'll get back to you within 2 business hours.",
@@ -132,7 +132,7 @@ export async function onRequestPost(context) {
       { status: 200, headers: { "Content-Type": "application/json" } }
     );
     
-    return addRateLimitHeaders(response, rateLimitResult);
+    return addRateLimitHeaders(successResponse, rateLimitResult);
   } catch (err) {
     console.error("Contact form error:", err);
     return new Response(
