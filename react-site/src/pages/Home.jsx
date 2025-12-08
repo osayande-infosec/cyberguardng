@@ -19,7 +19,7 @@ export default function Home() {
     { name: "SOC 2", icon: "🔒" },
     { name: "ISO 27001", icon: "🌐" },
     { name: "ISO 42001", icon: "🤖" },
-    { name: "NIST CSF", icon: "🛡️" },
+    { name: "GDPR", icon: "🇪🇺" },
     { name: "PIPEDA", icon: "🍁" },
     { name: "PHIPA", icon: "🏥" },
     { name: "HIPAA", icon: "⚕️" },
