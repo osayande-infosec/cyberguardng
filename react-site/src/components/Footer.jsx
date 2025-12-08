@@ -6,6 +6,7 @@ export default function Footer() {
   const socialLinks = [
     { name: 'LinkedIn', url: 'https://linkedin.com/company/cyberguardng', icon: '💼' },
     { name: 'Twitter', url: 'https://twitter.com/cyberguardng', icon: '𝕏' },
+    { name: 'Facebook', url: 'https://facebook.com/cyberguardng', icon: '👍' },
     { name: 'GitHub', url: 'https://github.com/cyberguardng', icon: '⚙️' },
     { name: 'YouTube', url: 'https://youtube.com/@cyberguardng', icon: '▶️' }
   ];
