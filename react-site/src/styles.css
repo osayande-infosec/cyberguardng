@@ -445,6 +445,7 @@ h3{font-size:1rem}
   border-radius:8px;
   background:rgba(56,189,248,0.1);
   border:1px solid rgba(56,189,248,0.2);
+  color:var(--accent);
   text-decoration:none;
   transition:all 0.2s ease
 }
@@ -453,9 +454,10 @@ h3{font-size:1rem}
   border-color:rgba(56,189,248,0.4);
   transform:translateY(-2px)
 }
-.social-icon{
-  font-size:1.2rem;
-  line-height:1
+.social-svg{
+  width:18px;
+  height:18px;
+  fill:currentColor
 }
 /* floating chat */
 .chat-launcher{
