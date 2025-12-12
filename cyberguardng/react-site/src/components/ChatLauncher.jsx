@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 export default function ChatLauncher() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([
-    { from: "bot", text: "Hi, I'm Yande, CyberGuardNG Assistant. How can I help you today?" },
+    { from: "bot", text: "Hi, I'm Alan, CyberGuardNG Assistant. How can I help you today?" },
   ]);
   const [input, setInput] = useState("");
   const [showContactForm, setShowContactForm] = useState(false);
@@ -62,7 +62,7 @@ export default function ChatLauncher() {
     setMessages(prev => [...prev, userMsg]);
     setInput("");
 
-    const thinking = { from: "bot", text: "Yande is thinking…", temp: true };
+    const thinking = { from: "bot", text: "Alan is thinking…", temp: true };
     setMessages(prev => [...prev, thinking]);
 
     try {
@@ -134,7 +134,7 @@ export default function ChatLauncher() {
       submitData.append("email", formData.email);
       submitData.append("company", formData.company);
       submitData.append("message", formData.message);
-      submitData.append("subject", `Consultation Request from ${formData.name} (via Yande)`);
+      submitData.append("subject", `Consultation Request from ${formData.name} (via Alan)`);
 
       const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
@@ -183,11 +183,11 @@ export default function ChatLauncher() {
             <div className="chat-header-brand">
               <img 
                 src="/assets/yande-avatar.png" 
-                alt="Yande" 
+                alt="Alan" 
                 className="chat-avatar"
               />
               <div className="chat-avatar-info">
-                <div className="chat-avatar-label">Yande</div>
+                <div className="chat-avatar-label">Alan</div>
                 <div className="chat-avatar-tagline">Security. Compliance. Confidence.</div>
               </div>
             </div>
