@@ -9,7 +9,7 @@ export async function onRequestPost(context) {
     let twiml = "";
 
     if (!digits) {
-      twiml = `<?xml version="1.0" encoding="UTF-8"?>\n<Response>\n  <Say voice="Polly.Joanna">Welcome to CyberGuardNG. Press 1 to speak with a human agent, or stay on the line to talk to our AI assistant.</Say>\n  <Gather numDigits="1" action="/voice-webhook" method="POST" timeout="5"/>\n</Response>`;
+      twiml = `<?xml version="1.0" encoding="UTF-8"?>\n<Response>\n  <Say voice="Polly.Joanna">Welcome to Cyberguard Next Generation Security Inc. Press 1 to speak with a human agent, otherwise stay on the line to explore our services. How can I help you today?</Say>\n  <Gather numDigits="1" action="/voice-webhook" method="POST" timeout="5"/>\n  <Say voice="Polly.Joanna">You are now being assisted by our AI agent. How can I help you today?</Say>\n  <!-- Insert your AI <Connect> or <Start> logic here -->\n</Response>`;
     } else if (digits === "1") {
       twiml = `<?xml version="1.0" encoding="UTF-8"?>\n<Response>\n  <Say voice="Polly.Joanna">Connecting you to a human agent now.</Say>\n  <Dial>${HUMAN_AGENT_NUMBER}</Dial>\n</Response>`;
     } else {
