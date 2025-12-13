@@ -14,17 +14,18 @@ export async function onRequest(context) {
   // Content Security Policy - Tightened (no wildcards)
   headers.set(
     'Content-Security-Policy',
-    "default-src 'self'; " +
-    "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://static.cloudflareinsights.com https://static.cloudflareinsights.com/; " +
-    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
-    "font-src 'self' https://fonts.gstatic.com; " +
-    "img-src 'self' data: https:; " +
-    "connect-src 'self' https://api.openai.com https://api.web3forms.com; " +
-    "frame-src 'self' https://challenges.cloudflare.com; " +
-    "base-uri 'self'; " +
-    "form-action 'self'; " +
-    "frame-ancestors 'none';"
-  );
+        "default-src 'self'; " +
+        "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://static.cloudflareinsights.com; " +
+        "script-src-elem 'self' https://challenges.cloudflare.com https://static.cloudflareinsights.com; " +
+        "style-src 'self' 'unsafe-inline'; " +
+        "img-src 'self' data: https:; " +
+        "font-src 'self' data:; " +
+        "connect-src 'self' https://challenges.cloudflare.com; " +
+        "frame-src https://challenges.cloudflare.com; " +
+        "object-src 'none'; " +
+        "base-uri 'self'; " +
+        "form-action 'self';"
+      );
   
   // HSTS - Force HTTPS for 1 year
   headers.set(
