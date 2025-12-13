@@ -107,7 +107,7 @@ export default function ChatLauncher() {
         ...prev.filter((m) => !m.temp),
         {
           from: "bot",
-          text: err.message || "Sorry, I had trouble reaching the CyberGuardNG server. Please try again shortly.",
+          text: "Sorry, I had trouble reaching the CyberGuardNG server. Please try again shortly.",
         },
       ]);
     }

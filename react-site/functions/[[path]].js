@@ -15,11 +15,11 @@ export async function onRequest(context) {
   headers.set(
     'Content-Security-Policy',
     "default-src 'self'; " +
-    "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com; " +
+    "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://static.cloudflareinsights.com; " +
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
     "font-src 'self' https://fonts.gstatic.com; " +
     "img-src 'self' data: https:; " +
-    "connect-src 'self' https://api.openai.com; " +
+    "connect-src 'self' https://api.openai.com https://api.web3forms.com; " +
     "frame-src 'self' https://challenges.cloudflare.com; " +
     "base-uri 'self'; " +
     "form-action 'self'; " +
