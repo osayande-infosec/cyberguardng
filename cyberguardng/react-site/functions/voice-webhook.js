@@ -21,6 +21,7 @@ export async function onRequestPost(context) {
       const recordingUrl = formData.get("RecordingUrl");
       let twiml = "";
 
+
       // Helper: Send email with MailChannels
       async function sendVoicemailEmail(recordingUrl, fromNumber) {
         const mailData = {
@@ -50,9 +51,42 @@ export async function onRequestPost(context) {
         }
       }
 
-      // If a voicemail was left, send email (fire and forget)
+      // Helper: Send SMS with Twilio
+      async function sendThankYouSMS(toNumber) {
+        // These should be set in your environment variables
+        const TWILIO_ACCOUNT_SID = context.env.TWILIO_ACCOUNT_SID;
+        const TWILIO_AUTH_TOKEN = context.env.TWILIO_AUTH_TOKEN;
+        const TWILIO_FROM_NUMBER = context.env.TWILIO_FROM_NUMBER;
+        if (!TWILIO_ACCOUNT_SID || !TWILIO_AUTH_TOKEN || !TWILIO_FROM_NUMBER) return;
+        const url = `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`;
+        const params = new URLSearchParams();
+        params.append('To', toNumber);
+        params.append('From', TWILIO_FROM_NUMBER);
+        params.append('Body', 'Thank you contacting CyberGuardNG Security Inc.');
+        try {
+          await fetch(url, {
+            method: 'POST',
+            headers: {
+              'Authorization': 'Basic ' + btoa(`${TWILIO_ACCOUNT_SID}:${TWILIO_AUTH_TOKEN}`),
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: params.toString(),
+          });
+        } catch (e) {
+          // Optionally log error
+        }
+      }
+
+
+      // If a voicemail was left, send email and SMS (fire and forget)
       if (recordingUrl) {
         sendVoicemailEmail(recordingUrl, formData.get("From"));
+        sendThankYouSMS(formData.get("From"));
+      }
+
+      // Always send SMS after every call (fire and forget)
+      if (formData.get("From")) {
+        sendThankYouSMS(formData.get("From"));
       }
 
       // IVR LOGIC
