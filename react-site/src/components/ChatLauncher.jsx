@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 
+const TURNSTILE_SITE_KEY = "YOUR_TURNSTILE_SITE_KEY"; // TODO: Replace with your actual site key
+
 export default function ChatLauncher() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([
@@ -10,6 +12,20 @@ export default function ChatLauncher() {
   const [showSuggestions, setShowSuggestions] = useState(true);
   const [formData, setFormData] = useState({ name: "", email: "", company: "", message: "" });
   const [formSubmitting, setFormSubmitting] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const turnstileWidgetRef = useRef(null);
+    // Load Turnstile widget when contact form is shown
+    useEffect(() => {
+      if (showContactForm && window.turnstile && turnstileWidgetRef.current) {
+        // Clean up any previous widget
+        turnstileWidgetRef.current.innerHTML = "";
+        window.turnstile.render(turnstileWidgetRef.current, {
+          sitekey: TURNSTILE_SITE_KEY,
+          callback: (token) => setTurnstileToken(token),
+          "expired-callback": () => setTurnstileToken("")
+        });
+      }
+    }, [showContactForm]);
   const bodyRef = useRef(null);
 
   const suggestedQuestions = [
@@ -125,6 +141,15 @@ export default function ChatLauncher() {
 
   async function handleContactSubmit(e) {
     e.preventDefault();
+
+    if (!turnstileToken) {
+      setMessages(prev => [
+        ...prev,
+        { from: "bot", text: "⚠️ Please complete the Turnstile challenge before submitting." },
+      ]);
+      return;
+    }
+
     setFormSubmitting(true);
 
     try {
@@ -134,7 +159,9 @@ export default function ChatLauncher() {
       submitData.append("email", formData.email);
       submitData.append("company", formData.company);
       submitData.append("message", formData.message);
+
       submitData.append("subject", `Consultation Request from ${formData.name} (via Yande)`);
+      submitData.append("cf-turnstile-response", turnstileToken);
 
       const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
@@ -151,6 +178,10 @@ export default function ChatLauncher() {
         setShowContactForm(false);
         setFormData({ name: "", email: "", company: "", message: "" });
       } else {
+        setTurnstileToken("");
+        if (window.turnstile && turnstileWidgetRef.current) {
+          window.turnstile.reset(turnstileWidgetRef.current);
+        }
         throw new Error("Form submission failed");
       }
     } catch (error) {
@@ -258,6 +289,9 @@ export default function ChatLauncher() {
                       rows="3"
                       required
                     />
+                  </div>
+                  <div className="form-group">
+                    <div ref={turnstileWidgetRef} style={{ minHeight: 65 }} />
                   </div>
                   <button type="submit" className="form-submit" disabled={formSubmitting}>
                     {formSubmitting ? "Submitting..." : "Submit Request"}
