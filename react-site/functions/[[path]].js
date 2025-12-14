@@ -15,8 +15,8 @@ export async function onRequest(context) {
   headers.set(
     'Content-Security-Policy',
         "default-src 'self'; " +
-        "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://static.cloudflareinsights.com; " +
-        "script-src-elem 'self' https://challenges.cloudflare.com https://static.cloudflareinsights.com; " +
+        "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://static.cloudflareinsights.com https://static.cloudflareinsights.com/ https://static.cloudflareinsights.com/*; " +
+        "script-src-elem 'self' https://challenges.cloudflare.com https://static.cloudflareinsights.com https://static.cloudflareinsights.com/ https://static.cloudflareinsights.com/*; " +
         "style-src 'self' 'unsafe-inline'; " +
         "img-src 'self' data: https:; " +
         "font-src 'self' data:; " +
