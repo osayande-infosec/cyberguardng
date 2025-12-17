@@ -7,14 +7,11 @@ export default function Contact() {
   const turnstileRef = useRef(null);
 
   useEffect(() => {
-    // Load Turnstile script with SRI
+    // Load Turnstile script (no SRI/crossorigin for CSP compatibility)
     const script = document.createElement("script");
     script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
     script.async = true;
     script.defer = true;
-    script.crossOrigin = "anonymous";
-    script.integrity = "sha384-TBbZ0IqtHQspfFNz2Pb1D3b0iLHdaWuQTrSwXVIHiPvOlJmMWtHGsKPH3xLN2fFF";
-    
     script.onload = () => {
       // Render Turnstile widget after script loads
       if (window.turnstile && turnstileRef.current) {
@@ -27,9 +24,7 @@ export default function Contact() {
         });
       }
     };
-    
     document.body.appendChild(script);
-
     return () => {
       if (document.body.contains(script)) {
         document.body.removeChild(script);
