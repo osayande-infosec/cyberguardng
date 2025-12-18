@@ -42,16 +42,13 @@ export default function Contact() {
     setLoading(true);
     setStatus({ type: "", message: "" });
 
-    // Validate Turnstile token
-    if (!turnstileToken) {
-      setStatus({ type: "error", message: "Please complete the CAPTCHA verification" });
-      setLoading(false);
-      return;
-    }
-
     const formData = new FormData(e.target);
     formData.append("access_key", "deb5b1b1-8dfe-438e-b9ed-5c99aaeb8783");
-    formData.append("cf-turnstile-response", turnstileToken);
+    
+    // Add Turnstile token if available (optional)
+    if (turnstileToken) {
+      formData.append("cf-turnstile-response", turnstileToken);
+    }
 
     try {
       const response = await fetch("https://api.web3forms.com/submit", {
@@ -131,7 +128,7 @@ export default function Contact() {
                 style={{ marginTop: "1rem", minHeight: "65px" }}
               ></div>
               
-              <button type="submit" className="btn btn-primary" style={{ marginTop: "1rem" }} disabled={loading || !turnstileToken}>
+              <button type="submit" className="btn btn-primary" style={{ marginTop: "1rem" }} disabled={loading}>
                 {loading ? "Sending..." : "Send"}
               </button>
             </form>
