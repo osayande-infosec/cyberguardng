@@ -7,16 +7,9 @@ export default function Contact() {
   const turnstileRef = useRef(null);
 
   useEffect(() => {
-    // Load Turnstile script with SRI
-    const script = document.createElement("script");
-    script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
-    script.async = true;
-    script.defer = true;
-    script.crossOrigin = "anonymous";
-    script.integrity = "sha384-TBbZ0IqtHQspfFNz2Pb1D3b0iLHdaWuQTrSwXVIHiPvOlJmMWtHGsKPH3xLN2fFF";
-    
-    script.onload = () => {
-      // Render Turnstile widget after script loads
+    // Turnstile script is already loaded globally in index.html
+    // Just render the widget when ready
+    const renderTurnstile = () => {
       if (window.turnstile && turnstileRef.current) {
         window.turnstile.render(turnstileRef.current, {
           sitekey: '0x4AAAAAACFV98o85pvOFYlJ',
@@ -27,14 +20,21 @@ export default function Contact() {
         });
       }
     };
-    
-    document.body.appendChild(script);
 
-    return () => {
-      if (document.body.contains(script)) {
-        document.body.removeChild(script);
-      }
-    };
+    // If turnstile is already loaded, render immediately
+    if (window.turnstile) {
+      renderTurnstile();
+    } else {
+      // Otherwise wait for it to load
+      const checkTurnstile = setInterval(() => {
+        if (window.turnstile) {
+          clearInterval(checkTurnstile);
+          renderTurnstile();
+        }
+      }, 100);
+
+      return () => clearInterval(checkTurnstile);
+    }
   }, []);
 
   async function handleSubmit(e) {
