@@ -1,23 +1,38 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 
 export default function Contact() {
   const [status, setStatus] = useState({ type: "", message: "" });
   const [loading, setLoading] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState("");
+  const [turnstileLoading, setTurnstileLoading] = useState(true);
   const turnstileRef = useRef(null);
+  const widgetIdRef = useRef(null);
 
   useEffect(() => {
     // Turnstile script is already loaded globally in index.html
-    // Just render the widget when ready
     const renderTurnstile = () => {
-      if (window.turnstile && turnstileRef.current) {
-        window.turnstile.render(turnstileRef.current, {
-          sitekey: '0x4AAAAAACFV98o85pvOFYlJ',
-          callback: (token) => {
-            setTurnstileToken(token);
-          },
-          theme: 'light'
-        });
+      if (window.turnstile && turnstileRef.current && !widgetIdRef.current) {
+        try {
+          widgetIdRef.current = window.turnstile.render(turnstileRef.current, {
+            sitekey: '0x4AAAAAACFV98o85pvOFYlJ',
+            callback: (token) => {
+              setTurnstileToken(token);
+              setTurnstileLoading(false);
+            },
+            'error-callback': () => {
+              setTurnstileLoading(false);
+              console.error('Turnstile error');
+            },
+            'expired-callback': () => {
+              setTurnstileToken("");
+            },
+            theme: 'light'
+          });
+          setTurnstileLoading(false);
+        } catch (e) {
+          console.error('Turnstile render error:', e);
+          setTurnstileLoading(false);
+        }
       }
     };
 
@@ -33,8 +48,27 @@ export default function Contact() {
         }
       }, 100);
 
-      return () => clearInterval(checkTurnstile);
+      // Timeout after 10 seconds
+      const timeout = setTimeout(() => {
+        clearInterval(checkTurnstile);
+        setTurnstileLoading(false);
+      }, 10000);
+
+      return () => {
+        clearInterval(checkTurnstile);
+        clearTimeout(timeout);
+      };
     }
+
+    // Cleanup on unmount
+    return () => {
+      if (widgetIdRef.current && window.turnstile) {
+        try {
+          window.turnstile.remove(widgetIdRef.current);
+        } catch (e) {}
+        widgetIdRef.current = null;
+      }
+    };
   }, []);
 
   async function handleSubmit(e) {
@@ -123,10 +157,19 @@ export default function Contact() {
               </div>
               
               {/* Cloudflare Turnstile CAPTCHA */}
-              <div 
-                ref={turnstileRef}
-                style={{ marginTop: "1rem", minHeight: "65px" }}
-              ></div>
+              <div style={{ marginTop: "1rem", minHeight: "65px" }}>
+                {turnstileLoading && (
+                  <div style={{ color: "var(--muted)", fontSize: "0.9rem" }}>
+                    Loading security verification...
+                  </div>
+                )}
+                <div ref={turnstileRef}></div>
+                {!turnstileLoading && !turnstileToken && (
+                  <div style={{ color: "#666", fontSize: "0.85rem", marginTop: "0.5rem" }}>
+                    ✓ Protected by Cloudflare
+                  </div>
+                )}
+              </div>
               
               <button type="submit" className="btn btn-primary" style={{ marginTop: "1rem" }} disabled={loading}>
                 {loading ? "Sending..." : "Send"}
