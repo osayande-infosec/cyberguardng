@@ -1,0 +1,124 @@
+# CyberGuardNG Security Scanning Workflow
+# Automated security scanning for cybersecurity portfolio demonstration
+
+name: Security Scan
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Run weekly on Monday at 9 AM UTC
+    - cron: '0 9 * * 1'
+  workflow_dispatch: # Allow manual trigger
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  # Job 1: Dependency Vulnerability Scanning
+  dependency-scan:
+    name: Dependency Vulnerability Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: cyberguardng/react-site/package-lock.json
+
+      - name: Install dependencies
+        working-directory: cyberguardng/react-site
+        run: npm ci
+
+      - name: Run npm audit
+        working-directory: cyberguardng/react-site
+        run: npm audit --audit-level=moderate
+        continue-on-error: true
+
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/node@master
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=medium
+          command: test
+
+  # Job 2: CodeQL Static Analysis
+  codeql-analysis:
+    name: CodeQL Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript
+          queries: security-and-quality
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v3
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:javascript"
+
+  # Job 3: OWASP ZAP Dynamic Application Security Testing (DAST)
+  owasp-zap-scan:
+    name: OWASP ZAP Baseline Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: OWASP ZAP Baseline Scan
+        uses: zaproxy/action-baseline@v0.12.0
+        with:
+          target: 'https://cyberguardng.ca'
+          rules_file_name: '.zap/rules.tsv'
+          cmd_options: '-a'
+        continue-on-error: true
+
+      - name: Upload ZAP Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: zap-report
+          path: report_html.html
+          retention-days: 30
+
+  # Job 4: Security Headers Check
+  security-headers:
+    name: Security Headers Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Security Headers
+        run: |
+          echo "=== Security Headers Check for cyberguardng.ca ==="
+          curl -sI https://cyberguardng.ca | grep -iE "(strict-transport|content-security|x-frame|x-content-type|referrer-policy|permissions-policy)"
+          echo ""
+          echo "=== SecurityHeaders.com Grade ==="
+          echo "Check: https://securityheaders.com/?q=cyberguardng.ca"
+
+  # Job 5: SSL/TLS Configuration Check
+  ssl-check:
+    name: SSL/TLS Security Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSL Labs Check Info
+        run: |
+          echo "=== SSL/TLS Configuration ==="
+          echo "Manual check required at: https://www.ssllabs.com/ssltest/analyze.html?d=cyberguardng.ca"
+          echo ""
+          echo "Checking certificate validity..."
+          echo | openssl s_client -servername cyberguardng.ca -connect cyberguardng.ca:443 2>/dev/null | openssl x509 -noout -dates

@@ -1,0 +1,25 @@
+# OWASP ZAP Rules Configuration
+# Rules to ignore or modify severity for CyberGuardNG scans
+
+# Format: Rule ID	Action	Description
+# Actions: IGNORE, WARN, FAIL
+
+# Informational alerts - usually safe to ignore
+10021	IGNORE	X-Content-Type-Options Header Missing (handled by Cloudflare)
+10038	IGNORE	Content Security Policy (CSP) Header Not Set (we set it via functions)
+10098	IGNORE	Cross-Domain Misconfiguration (expected for CDN)
+
+# Low severity - monitor but don't fail
+10020	WARN	X-Frame-Options Header Not Set
+10037	WARN	Server Leaks Information via X-Powered-By
+10096	WARN	Timestamp Disclosure
+
+# Medium/High - should be addressed
+10010	FAIL	Cookie Without Secure Flag
+10011	FAIL	Cookie Without HttpOnly Flag
+10015	FAIL	Incomplete or No Cache-control Header Set
+10017	FAIL	Cross-Domain JavaScript Source File Inclusion
+10019	FAIL	Content-Type Header Missing
+40012	FAIL	Cross Site Scripting (Reflected)
+40014	FAIL	Cross Site Scripting (Persistent)
+90022	FAIL	Application Error Disclosure
