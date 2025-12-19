@@ -54,31 +54,81 @@
   
   <!-- Blog Articles -->
   <url>
-    <loc>https://cyberguardng.ca/blog/ai-security-trends</loc>
-    <lastmod>2025-12-06</lastmod>
+    <loc>https://cyberguardng.ca/blog/security-gaps-smes</loc>
+    <lastmod>2025-12-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://cyberguardng.ca/blog/soc2-iso-comparison</loc>
-    <lastmod>2025-12-06</lastmod>
+    <loc>https://cyberguardng.ca/blog/iso27001-small-teams</loc>
+    <lastmod>2025-12-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://cyberguardng.ca/blog/compliance-guide</loc>
-    <lastmod>2025-12-06</lastmod>
+    <loc>https://cyberguardng.ca/blog/ai-detect-threats</loc>
+    <lastmod>2025-12-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://cyberguardng.ca/blog/first-24-hours-incident</loc>
+    <lastmod>2025-12-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://cyberguardng.ca/blog/threats-2025</loc>
-    <lastmod>2025-12-06</lastmod>
+    <lastmod>2025-12-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
-
+  
+  <url>
+    <loc>https://cyberguardng.ca/blog/soc2-vs-iso</loc>
+    <lastmod>2025-12-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://cyberguardng.ca/blog/ai-security</loc>
+    <lastmod>2025-12-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://cyberguardng.ca/blog/compliance-as-a-service</loc>
+    <lastmod>2025-12-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <!-- Portal -->
+  <url>
+    <loc>https://cyberguardng.ca/portal/login</loc>
+    <lastmod>2025-12-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <!-- Legal -->
+  <url>
+    <loc>https://cyberguardng.ca/privacy</loc>
+    <lastmod>2025-12-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  
+  <url>
+    <loc>https://cyberguardng.ca/terms</loc>
+    <lastmod>2025-12-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
 </urlset>
