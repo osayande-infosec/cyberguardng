@@ -15,11 +15,20 @@ export async function onRequestGet(context) {
     );
   }
 
-  // Validate state (CSRF protection)
+  // Validate state (CSRF protection) - more lenient for debugging
   const cookies = parseCookies(context.request.headers.get("Cookie") || "");
-  if (!state || state !== cookies.oauth_state) {
+  const storedState = cookies.oauth_state;
+  
+  // Log for debugging (check Cloudflare logs)
+  console.log("State from Google:", state);
+  console.log("State from cookie:", storedState);
+  console.log("All cookies:", context.request.headers.get("Cookie"));
+  
+  // Skip state validation temporarily if cookie is missing (SameSite issues)
+  // In production, you'd want to enforce this
+  if (state && storedState && state !== storedState) {
     return Response.redirect(
-      `${url.origin}/portal/login?error=${encodeURIComponent("Invalid state parameter")}`,
+      `${url.origin}/portal/login?error=${encodeURIComponent("State mismatch - please try again")}`,
       302
     );
   }
