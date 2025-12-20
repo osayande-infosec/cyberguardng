@@ -146,7 +146,7 @@ function parseCookies(cookieHeader) {
 async function createSessionToken(data, secret) {
   const encoder = new TextEncoder();
   const payload = JSON.stringify(data);
-  const payloadBase64 = btoa(payload);
+  const payloadBase64 = base64UrlEncode(payload);
   
   // Create HMAC signature
   const key = await crypto.subtle.importKey(
@@ -158,7 +158,15 @@ async function createSessionToken(data, secret) {
   );
   
   const signature = await crypto.subtle.sign("HMAC", key, encoder.encode(payloadBase64));
-  const signatureBase64 = btoa(String.fromCharCode(...new Uint8Array(signature)));
+  const signatureBase64 = base64UrlEncode(String.fromCharCode(...new Uint8Array(signature)));
   
   return `${payloadBase64}.${signatureBase64}`;
+}
+
+// Helper: URL-safe base64 encoding
+function base64UrlEncode(str) {
+  return btoa(unescape(encodeURIComponent(str)))
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/, '');
 }

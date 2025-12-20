@@ -87,6 +87,7 @@ async function verifySessionToken(token, secret) {
     const [payloadBase64, signatureBase64] = token.split(".");
     
     if (!payloadBase64 || !signatureBase64) {
+      console.log("Token missing parts");
       return null;
     }
 
@@ -101,19 +102,31 @@ async function verifySessionToken(token, secret) {
       ["verify"]
     );
 
-    const signature = Uint8Array.from(atob(signatureBase64), c => c.charCodeAt(0));
+    const signature = Uint8Array.from(base64UrlDecode(signatureBase64), c => c.charCodeAt(0));
     const isValid = await crypto.subtle.verify("HMAC", key, signature, encoder.encode(payloadBase64));
 
     if (!isValid) {
+      console.log("Signature verification failed");
       return null;
     }
 
     // Decode payload
-    const payload = JSON.parse(atob(payloadBase64));
+    const payload = JSON.parse(base64UrlDecode(payloadBase64));
     return payload;
 
   } catch (error) {
     console.error("Token verification error:", error);
     return null;
   }
+}
+
+// Helper: URL-safe base64 decoding
+function base64UrlDecode(str) {
+  // Add padding if needed
+  let base64 = str.replace(/-/g, '+').replace(/_/g, '/');
+  const padding = base64.length % 4;
+  if (padding) {
+    base64 += '='.repeat(4 - padding);
+  }
+  return decodeURIComponent(escape(atob(base64)));
 }
