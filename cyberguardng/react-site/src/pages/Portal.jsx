@@ -66,24 +66,44 @@ export default function Portal() {
             justifyContent: "space-between", 
             alignItems: "center",
             marginBottom: "2rem",
-            paddingBottom: "1rem",
-            borderBottom: "1px solid rgba(255,255,255,0.1)"
+            paddingBottom: "1.5rem",
+            borderBottom: "1px solid rgba(255,255,255,0.1)",
+            flexWrap: "wrap",
+            gap: "1rem"
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-              {user.picture && (
+              {user.picture ? (
                 <img 
                   src={user.picture} 
                   alt={user.name}
+                  referrerPolicy="no-referrer"
                   style={{ 
-                    width: "48px", 
-                    height: "48px", 
+                    width: "56px", 
+                    height: "56px", 
                     borderRadius: "50%",
-                    border: "2px solid var(--accent)"
+                    border: "2px solid var(--accent)",
+                    objectFit: "cover"
                   }}
                 />
+              ) : (
+                <div style={{
+                  width: "56px",
+                  height: "56px",
+                  borderRadius: "50%",
+                  border: "2px solid var(--accent)",
+                  backgroundColor: "var(--accent)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: "1.5rem",
+                  fontWeight: "bold",
+                  color: "var(--bg)"
+                }}>
+                  {user.name?.charAt(0)?.toUpperCase() || "U"}
+                </div>
               )}
               <div>
-                <h2 style={{ margin: 0, fontSize: "1.5rem" }}>Welcome, {user.name}</h2>
+                <h2 style={{ margin: 0, fontSize: "1.5rem" }}>Welcome, {user.name?.split(" ")[0] || "User"}</h2>
                 <p style={{ margin: 0, color: "var(--muted)", fontSize: "0.9rem" }}>{user.email}</p>
               </div>
             </div>
