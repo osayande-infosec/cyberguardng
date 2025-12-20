@@ -139,3 +139,27 @@ CREATE TABLE IF NOT EXISTS platform_admins (
   role TEXT DEFAULT 'staff' CHECK(role IN ('super_admin', 'admin', 'staff')),
   created_at TEXT DEFAULT (datetime('now'))
 );
+
+-- Onboarding requests (prospective clients)
+CREATE TABLE IF NOT EXISTS onboarding_requests (
+  id TEXT PRIMARY KEY,
+  company_name TEXT NOT NULL,
+  industry TEXT,
+  contact_name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  phone TEXT,
+  company_size TEXT,
+  services_interested TEXT, -- JSON array
+  message TEXT,
+  status TEXT DEFAULT 'pending' CHECK(status IN ('pending', 'contacted', 'approved', 'rejected')),
+  notes TEXT, -- Admin notes
+  reviewed_by TEXT,
+  reviewed_at TEXT,
+  organization_id TEXT, -- Set when approved and org created
+  created_at TEXT DEFAULT (datetime('now')),
+  updated_at TEXT DEFAULT (datetime('now')),
+  FOREIGN KEY (organization_id) REFERENCES organizations(id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_onboarding_status ON onboarding_requests(status);
+CREATE INDEX IF NOT EXISTS idx_onboarding_email ON onboarding_requests(email);

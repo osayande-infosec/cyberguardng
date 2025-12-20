@@ -13,6 +13,8 @@ import BlogArticle from "./pages/BlogArticle";
 import CaseStudies from "./pages/CaseStudies";
 import Portal from "./pages/Portal";
 import PortalLogin from "./pages/PortalLogin";
+import Onboarding from "./pages/Onboarding";
+import AdminClients from "./pages/AdminClients";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 
@@ -36,6 +38,8 @@ export default function App() {
         <Route path="/terms" element={<Terms />} />
         <Route path="/portal" element={<Portal />} />
         <Route path="/portal/login" element={<PortalLogin />} />
+        <Route path="/portal/onboarding" element={<Onboarding />} />
+        <Route path="/portal/admin/clients" element={<AdminClients />} />
       </Routes>
       {!isPortalRoute && <ChatLauncher />}
       {!isPortalRoute && <Footer />}

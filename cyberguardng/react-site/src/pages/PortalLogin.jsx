@@ -186,6 +186,26 @@ export default function PortalLogin() {
               </p>
             </div>
 
+            {/* New Client CTA */}
+            <div style={{ 
+              marginTop: "2rem", 
+              padding: "1.5rem",
+              backgroundColor: "rgba(0, 212, 255, 0.05)",
+              borderRadius: "8px",
+              textAlign: "center",
+              border: "1px solid rgba(0, 212, 255, 0.2)"
+            }}>
+              <p style={{ margin: "0 0 1rem 0" }}>
+                <strong>New to CyberGuardNG?</strong>
+              </p>
+              <p style={{ color: "var(--muted)", margin: "0 0 1rem 0", fontSize: "0.9rem" }}>
+                Request access to our client portal and start your security journey.
+              </p>
+              <a href="/portal/onboarding" className="btn btn-primary" style={{ fontSize: "0.9rem" }}>
+                Request Client Access →
+              </a>
+            </div>
+
             {/* Back to Home */}
             <div style={{ textAlign: "center", marginTop: "2rem" }}>
               <a href="/" style={{ color: "var(--accent)", textDecoration: "none" }}>
