@@ -13,6 +13,8 @@ import BlogArticle from "./pages/BlogArticle";
 import CaseStudies from "./pages/CaseStudies";
 import Portal from "./pages/Portal";
 import PortalLogin from "./pages/PortalLogin";
+import Privacy from "./pages/Privacy";
+import Terms from "./pages/Terms";
 
 export default function App() {
   const location = useLocation();
@@ -30,6 +32,8 @@ export default function App() {
         <Route path="/case-studies" element={<CaseStudies />} />
         <Route path="/blog/:slug" element={<BlogArticle />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/terms" element={<Terms />} />
         <Route path="/portal" element={<Portal />} />
         <Route path="/portal/login" element={<PortalLogin />} />
       </Routes>
