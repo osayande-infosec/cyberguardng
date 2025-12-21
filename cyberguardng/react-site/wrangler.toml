@@ -1,0 +1,7 @@
+name = "cyberguardng"
+compatibility_date = "2024-01-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "cyberguardng-db"
+database_id = "c44693da-0c4b-41be-a44e-177141ed1fac"
