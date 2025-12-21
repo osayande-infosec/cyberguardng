@@ -313,7 +313,6 @@ lighthouse https://cyberguardng.ca --view
 3. [ ] Move Web3Forms key to backend
 4. [ ] Add CAPTCHA to contact form
 
-### Medium Priority (This Month)
 5. [ ] Set up Snyk monitoring
 6. [ ] Run OWASP ZAP baseline scan
 7. [ ] Implement request logging

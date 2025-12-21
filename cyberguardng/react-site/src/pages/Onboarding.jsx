@@ -175,11 +175,11 @@ export default function Onboarding() {
                     name="industry"
                     value={formData.industry}
                     onChange={handleChange}
-                    style={inputStyle}
+                    style={selectStyle}
                   >
-                    <option value="">Select industry...</option>
+                    <option value="" style={{ backgroundColor: "#1a1a2e", color: "#fff" }}>Select industry...</option>
                     {industries.map(ind => (
-                      <option key={ind} value={ind}>{ind}</option>
+                      <option key={ind} value={ind} style={{ backgroundColor: "#1a1a2e", color: "#fff" }}>{ind}</option>
                     ))}
                   </select>
                 </div>
@@ -193,11 +193,11 @@ export default function Onboarding() {
                     name="companySize"
                     value={formData.companySize}
                     onChange={handleChange}
-                    style={inputStyle}
+                    style={selectStyle}
                   >
-                    <option value="">Select size...</option>
+                    <option value="" style={{ backgroundColor: "#1a1a2e", color: "#fff" }}>Select size...</option>
                     {companySizes.map(size => (
-                      <option key={size} value={size}>{size}</option>
+                      <option key={size} value={size} style={{ backgroundColor: "#1a1a2e", color: "#fff" }}>{size}</option>
                     ))}
                   </select>
                 </div>
@@ -339,6 +339,16 @@ const inputStyle = {
   backgroundColor: "rgba(255,255,255,0.05)",
   border: "1px solid rgba(255,255,255,0.2)",
   borderRadius: "8px",
-  color: "var(--text)",
+  color: "#fff",
   fontSize: "1rem"
+};
+
+const selectStyle = {
+  ...inputStyle,
+  appearance: "none",
+  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23fff' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`,
+  backgroundRepeat: "no-repeat",
+  backgroundPosition: "right 0.75rem center",
+  paddingRight: "2.5rem",
+  cursor: "pointer"
 };

@@ -73,15 +73,8 @@ export async function onRequestPost(context) {
       message || null
     ).run();
 
-    // Log the request
-    await db.prepare(`
-      INSERT INTO activity_log (id, organization_id, user_id, action, resource_type, resource_id, details)
-      VALUES (?, NULL, NULL, 'onboarding_request', 'onboarding', ?, ?)
-    `).bind(
-      generateId(),
-      requestId,
-      JSON.stringify({ companyName, contactEmail })
-    ).run();
+    // Skip activity log for onboarding requests (no org yet)
+    // Activity will be logged when request is approved
 
     return jsonResponse({ 
       success: true, 
