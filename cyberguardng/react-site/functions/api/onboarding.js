@@ -1,7 +1,7 @@
 // Onboarding API - Handle client registration requests
 // Public endpoint for new users to request access
 
-import { generateId, jsonResponse, errorResponse } from "../lib/db.js";
+import { generateId, jsonResponse, errorResponse } from "./lib/db.js";
 
 // POST - Submit onboarding request
 export async function onRequestPost(context) {
