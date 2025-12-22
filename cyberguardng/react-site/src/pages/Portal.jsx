@@ -88,6 +88,10 @@ export default function Portal() {
   }
 
   // Handle different access states
+  if (portalData?.access === "not_found") {
+    return <NotFoundAccount user={portalData.user} onLogout={handleLogout} />;
+  }
+
   if (portalData?.access === "pending") {
     return <PendingApproval user={portalData.user} onLogout={handleLogout} />;
   }
@@ -104,7 +108,38 @@ export default function Portal() {
   return <ClientDashboard data={portalData} onLogout={handleLogout} />;
 }
 
-// Pending approval screen
+// No account found - redirect to onboarding
+function NotFoundAccount({ user, onLogout }) {
+  return (
+    <main>
+      <section className="section">
+        <div className="container" style={{ maxWidth: "600px", textAlign: "center", padding: "4rem 0" }}>
+          <div style={{ fontSize: "4rem", marginBottom: "1rem" }}>🔐</div>
+          <h1>No Account Found</h1>
+          <p style={{ color: "var(--muted)", marginBottom: "1rem" }}>
+            Hi {user?.name?.split(" ")[0] || "there"}, we don't have a client account associated with <strong>{user?.email}</strong>.
+          </p>
+          <p style={{ color: "var(--muted)", marginBottom: "2rem" }}>
+            If you're a new client, please request access to get started.
+          </p>
+          <div style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap" }}>
+            <a href="/portal/onboarding" className="btn btn-primary">
+              Request Client Access
+            </a>
+            <button onClick={onLogout} className="btn btn-secondary">
+              Sign Out
+            </button>
+          </div>
+          <p style={{ color: "var(--muted)", fontSize: "0.85rem", marginTop: "2rem" }}>
+            Already submitted a request? Your approval is in progress. We'll email you once your account is ready.
+          </p>
+        </div>
+      </section>
+    </main>
+  );
+}
+
+// Pending approval screen (for users who have been added but org not fully approved)
 function PendingApproval({ user, onLogout }) {
   return (
     <main>

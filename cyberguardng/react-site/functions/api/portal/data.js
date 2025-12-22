@@ -17,36 +17,50 @@ export async function onRequestGet(context) {
   }
 
   try {
+    // Check if they're a platform admin first
+    const isAdmin = await isPlatformAdmin(db, session.email);
+    
+    if (isAdmin) {
+      return jsonResponse({
+        access: "admin",
+        user: {
+          email: session.email,
+          name: session.name,
+          picture: session.picture,
+          role: "platform_admin"
+        },
+        message: "Platform admin - access admin panel to manage clients"
+      });
+    }
+
     // Get user with organization info
     let user = await getUserWithOrg(db, session.email);
     
     // If user doesn't exist in DB, they're not an approved client
+    // Return "not_found" so frontend can redirect to onboarding
     if (!user) {
-      // Check if they're a platform admin
-      const isAdmin = await isPlatformAdmin(db, session.email);
-      
-      if (isAdmin) {
-        return jsonResponse({
-          access: "admin",
-          user: {
-            email: session.email,
-            name: session.name,
-            picture: session.picture,
-            role: "platform_admin"
-          },
-          message: "Platform admin - access admin panel to manage clients"
-        });
-      }
-      
-      // Not approved - show pending state
       return jsonResponse({
-        access: "pending",
+        access: "not_found",
         user: {
           email: session.email,
           name: session.name,
           picture: session.picture
         },
-        message: "Your account is pending approval. Please contact CyberGuardNG to complete onboarding."
+        message: "No account found. Please request access to the client portal."
+      });
+    }
+
+    // Check user status
+    if (user.status === 'pending_approval') {
+      return jsonResponse({
+        access: "pending",
+        user: {
+          email: user.email,
+          name: user.name,
+          picture: session.picture,
+          organization: user.org_name
+        },
+        message: "Your account is pending approval."
       });
     }
 
