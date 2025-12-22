@@ -15,6 +15,7 @@ import Portal from "./pages/Portal";
 import PortalLogin from "./pages/PortalLogin";
 import Onboarding from "./pages/Onboarding";
 import AdminClients from "./pages/AdminClients";
+import AdminClientDetail from "./pages/AdminClientDetail";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 
@@ -40,6 +41,7 @@ export default function App() {
         <Route path="/portal/login" element={<PortalLogin />} />
         <Route path="/portal/onboarding" element={<Onboarding />} />
         <Route path="/portal/admin/clients" element={<AdminClients />} />
+        <Route path="/portal/admin/clients/:orgId" element={<AdminClientDetail />} />
       </Routes>
       {!isPortalRoute && <ChatLauncher />}
       {!isPortalRoute && <Footer />}

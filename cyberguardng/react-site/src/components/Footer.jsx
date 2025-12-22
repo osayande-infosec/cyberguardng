@@ -66,6 +66,7 @@ export default function Footer() {
             <a href="/services">Services</a>
             <a href="/resources">Resources</a>
             <a href="/contact">Contact</a>
+            <a href="/portal/login">Client Portal</a>
           </div>
         </div>
       </div>

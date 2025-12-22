@@ -325,7 +325,7 @@ export default function AdminClients() {
                         <span>📊 {org.compliance_count || 0} programs</span>
                         <span>🔍 {org.assessment_count || 0} assessments</span>
                       </div>
-                      <div style={{ marginTop: "1rem", paddingTop: "1rem", borderTop: "1px solid rgba(255,255,255,0.1)" }}>
+                      <div style={{ marginTop: "1rem", paddingTop: "1rem", borderTop: "1px solid rgba(255,255,255,0.1)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                         <span style={{ 
                           padding: "0.25rem 0.5rem", 
                           backgroundColor: "rgba(0, 212, 255, 0.1)", 
@@ -334,6 +334,13 @@ export default function AdminClients() {
                         }}>
                           {org.subscription_tier || 'standard'}
                         </span>
+                        <button 
+                          onClick={() => navigate(`/portal/admin/clients/${org.id}`)}
+                          className="btn btn-primary"
+                          style={{ fontSize: "0.85rem", padding: "0.4rem 0.75rem" }}
+                        >
+                          Manage →
+                        </button>
                       </div>
                     </div>
                   ))}
