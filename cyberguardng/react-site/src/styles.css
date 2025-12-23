@@ -56,11 +56,9 @@ h3{font-size:1rem}
   align-items:center
 }
 .logo-img{
-  height:70px;
+  height:60px;
   width:auto;
-  min-width:210px;
-  image-rendering:-webkit-optimize-contrast;
-  image-rendering:crisp-edges
+  min-width:180px
 }
 .brand-text{
   display:flex;
