@@ -38,7 +38,7 @@ export default function Header() {
       <div className="container site-header-inner">
         <div className="brand">
           <Link to="/" onClick={closeMenu} style={{textDecoration: 'none', display: 'flex', alignItems: 'center', color: 'inherit'}}>
-            <img src="/assets/cyberguard-logo-new.png" alt="CyberGuardNG Security Inc. - Modern Cybersecurity for Growing Businesses" className="logo-img" />
+            <img src="/assets/cyberguard-logo-new.png?v=2" alt="CyberGuardNG Security Inc. - Modern Cybersecurity for Growing Businesses" className="logo-img" />
           </Link>
         </div>
         <button
