@@ -59,19 +59,24 @@ export async function isPlatformAdmin(db, email) {
 
 // Log activity
 export async function logActivity(db, { organizationId, userId, action, resourceType, resourceId, details, ipAddress }) {
-  await db.prepare(`
-    INSERT INTO activity_log (id, organization_id, user_id, action, resource_type, resource_id, details, ip_address)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-  `).bind(
-    generateId(),
-    organizationId,
-    userId,
-    action,
-    resourceType,
-    resourceId,
-    details ? JSON.stringify(details) : null,
-    ipAddress
-  ).run();
+  try {
+    await db.prepare(`
+      INSERT INTO activity_log (id, organization_id, user_id, action, resource_type, resource_id, details, ip_address)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `).bind(
+      generateId(),
+      organizationId || 'system',
+      userId || null,
+      action || 'unknown',
+      resourceType || null,
+      resourceId || null,
+      details ? JSON.stringify(details) : null,
+      ipAddress || null
+    ).run();
+  } catch (error) {
+    console.error('Failed to log activity:', error);
+    // Don't throw - activity logging shouldn't break main operations
+  }
 }
 
 // Helper: Parse cookies from header

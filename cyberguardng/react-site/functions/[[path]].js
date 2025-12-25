@@ -19,10 +19,10 @@ export async function onRequest(context) {
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com; " +
     "font-src 'self' https://fonts.gstatic.com; " +
     "img-src 'self' data: https: blob:; " +
-    "connect-src 'self' https://api.openai.com https://api.web3forms.com https://cloudflareinsights.com https://accounts.google.com https://oauth2.googleapis.com https://www.googleapis.com; " +
-    "frame-src 'self' https://challenges.cloudflare.com https://accounts.google.com; " +
+    "connect-src 'self' https://api.openai.com https://api.web3forms.com https://cloudflareinsights.com https://accounts.google.com https://oauth2.googleapis.com https://www.googleapis.com https://*.okta.com; " +
+    "frame-src 'self' https://challenges.cloudflare.com https://accounts.google.com https://*.okta.com; " +
     "base-uri 'self'; " +
-    "form-action 'self' https://api.web3forms.com https://accounts.google.com; " +
+    "form-action 'self' https://api.web3forms.com https://accounts.google.com https://*.okta.com; " +
     "frame-ancestors 'none';"
   );
   

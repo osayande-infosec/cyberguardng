@@ -122,11 +122,12 @@ export async function onRequestPost(context) {
         // Log activity
         await logActivity(db, {
           organizationId: orgId,
-          userId: null,
+          userId: userId,
           action: "organization_approved",
           resourceType: "organization",
           resourceId: orgId,
-          details: { companyName: request.company_name, approvedBy: session.email }
+          details: { companyName: request.company_name, approvedBy: session.email },
+          ipAddress: context.request.headers.get('CF-Connecting-IP') || null
         });
 
         return jsonResponse({ 

@@ -98,7 +98,7 @@ export async function onRequestGet(context) {
     // Get recent documents
     const documents = await db.prepare(`
       SELECT * FROM documents 
-      WHERE organization_id = ? AND status = 'approved'
+      WHERE organization_id = ? AND status = 'published'
       ORDER BY created_at DESC 
       LIMIT 10
     `).bind(orgId).all();

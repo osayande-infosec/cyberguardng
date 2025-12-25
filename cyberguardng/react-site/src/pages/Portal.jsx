@@ -205,7 +205,7 @@ function AdminDashboard({ user, onLogout }) {
           
           <div className="section-header" style={{ textAlign: "left", marginBottom: "2rem" }}>
             <h1>🛡️ Admin Dashboard</h1>
-            <p>Manage client organizations and users.</p>
+            <p>Manage client organizations, users, and documents.</p>
           </div>
 
           <div className="card" style={{ marginBottom: "2rem" }}>
@@ -213,6 +213,9 @@ function AdminDashboard({ user, onLogout }) {
             <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", marginTop: "1rem" }}>
               <a href="/portal/admin/clients" className="btn btn-primary">
                 Manage Clients
+              </a>
+              <a href="/portal/admin/documents" className="btn btn-primary">
+                📄 Manage Documents
               </a>
               <a href="/portal/admin/users" className="btn btn-secondary">
                 Manage Users
@@ -227,7 +230,9 @@ function AdminDashboard({ user, onLogout }) {
             </p>
             <code style={{ display: "block", padding: "1rem", backgroundColor: "rgba(0,0,0,0.3)", borderRadius: "8px", fontSize: "0.85rem" }}>
               GET /api/admin/clients - List all organizations<br/>
-              POST /api/admin/clients - Create org or add user
+              POST /api/admin/clients - Create org or add user<br/>
+              GET /api/admin/documents - List all documents<br/>
+              POST /api/admin/documents - Upload document for client
             </code>
           </div>
         </div>
@@ -314,28 +319,51 @@ function ClientDashboard({ data, onLogout }) {
             {/* Documents */}
             <div className="card">
               <div style={{ fontSize: "2rem", marginBottom: "1rem" }}>📁</div>
-              <h3>Documents</h3>
+              <h3>Reports & Documents</h3>
               {dashboard?.documents?.length > 0 ? (
                 <div style={{ marginTop: "1rem" }}>
                   {dashboard.documents.slice(0, 4).map((doc) => (
                     <div key={doc.id} style={{ 
-                      padding: "0.5rem 0",
-                      borderBottom: "1px solid rgba(255,255,255,0.1)"
+                      padding: "0.75rem",
+                      backgroundColor: "rgba(255,255,255,0.03)",
+                      borderRadius: "8px",
+                      marginBottom: "0.5rem"
                     }}>
-                      <a href={doc.file_url || "#"} style={{ color: "var(--accent)" }}>
-                        {doc.title}
-                      </a>
-                      <div style={{ fontSize: "0.8rem", color: "var(--muted)" }}>
-                        {doc.category}
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", gap: "0.5rem" }}>
+                        <div style={{ flex: 1 }}>
+                          <div style={{ fontWeight: "600", marginBottom: "0.25rem" }}>{doc.title}</div>
+                          <div style={{ fontSize: "0.8rem", color: "var(--muted)" }}>
+                            {formatCategory(doc.category)} • v{doc.version || "1.0"}
+                          </div>
+                        </div>
+                        {doc.file_url && (
+                          <a 
+                            href={doc.file_url} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            download
+                            className="btn btn-primary"
+                            style={{ padding: "0.4rem 0.8rem", fontSize: "0.75rem", whiteSpace: "nowrap" }}
+                          >
+                            ⬇ Download
+                          </a>
+                        )}
                       </div>
+                      {doc.description && (
+                        <div style={{ fontSize: "0.8rem", color: "var(--muted)", marginTop: "0.5rem" }}>
+                          {doc.description}
+                        </div>
+                      )}
                     </div>
                   ))}
-                  <button className="btn btn-primary" style={{ width: "100%", marginTop: "1rem", fontSize: "0.85rem" }}>
-                    Browse All Documents →
-                  </button>
+                  {dashboard.documents.length > 4 && (
+                    <p style={{ color: "var(--muted)", fontSize: "0.85rem", textAlign: "center", marginTop: "0.5rem" }}>
+                      +{dashboard.documents.length - 4} more documents
+                    </p>
+                  )}
                 </div>
               ) : (
-                <p style={{ color: "var(--muted)" }}>No documents available yet.</p>
+                <p style={{ color: "var(--muted)" }}>No documents available yet. Your reports will appear here once uploaded.</p>
               )}
             </div>
 
@@ -409,7 +437,7 @@ function PortalHeader({ user, organization, onLogout }) {
         {user?.picture ? (
           <img 
             src={user.picture} 
-            alt={user.name}
+            alt=""
             referrerPolicy="no-referrer"
             style={{ 
               width: "56px", 
@@ -453,6 +481,22 @@ function PortalHeader({ user, organization, onLogout }) {
       </button>
     </div>
   );
+}
+
+// Format document category for display
+function formatCategory(category) {
+  const labels = {
+    pentest_report: "Penetration Test",
+    vulnerability_scan: "Vulnerability Scan",
+    compliance_audit: "Compliance Audit",
+    risk_assessment: "Risk Assessment",
+    security_policy: "Security Policy",
+    incident_report: "Incident Report",
+    training_material: "Training",
+    certificate: "Certificate",
+    other: "Other"
+  };
+  return labels[category] || category?.replace(/_/g, " ") || "Document";
 }
 
 // Status badge component
