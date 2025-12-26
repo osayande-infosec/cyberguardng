@@ -165,7 +165,7 @@ export default function AdminDocuments() {
                 <select 
                   value={filterOrg} 
                   onChange={(e) => setFilterOrg(e.target.value)}
-                  style={{ padding: "0.5rem", borderRadius: "4px", border: "1px solid rgba(255,255,255,0.2)", backgroundColor: "var(--card-bg)", color: "var(--text)" }}
+                  style={{ padding: "0.5rem", borderRadius: "4px", border: "1px solid rgba(255,255,255,0.2)", backgroundColor: "#1a1a2e", color: "#ffffff" }}
                 >
                   <option value="">All Organizations</option>
                   {organizations.map(org => (
@@ -178,7 +178,7 @@ export default function AdminDocuments() {
                 <select 
                   value={filterCategory} 
                   onChange={(e) => setFilterCategory(e.target.value)}
-                  style={{ padding: "0.5rem", borderRadius: "4px", border: "1px solid rgba(255,255,255,0.2)", backgroundColor: "var(--card-bg)", color: "var(--text)" }}
+                  style={{ padding: "0.5rem", borderRadius: "4px", border: "1px solid rgba(255,255,255,0.2)", backgroundColor: "#1a1a2e", color: "#ffffff" }}
                 >
                   <option value="">All Categories</option>
                   {CATEGORIES.map(cat => (
