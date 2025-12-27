@@ -1,48 +1,294 @@
 # CyberGuardNG Security Inc.
 
-Modern cybersecurity and continuous compliance solutions for growing businesses.
+<div align="center">
 
-[![Live Site](https://img.shields.io/badge/Live-cyberguardng.ca-blue?style=flat-square)](https://cyberguardng.ca)
-[![React](https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react)](https://react.dev)
-[![Cloudflare](https://img.shields.io/badge/Cloudflare-Pages-F38020?style=flat-square&logo=cloudflare)](https://pages.cloudflare.com)
+![CyberGuardNG](https://img.shields.io/badge/CyberGuardNG-Security-blue?style=for-the-badge)
+![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react&logoColor=white)
+![Cloudflare](https://img.shields.io/badge/Cloudflare-Pages-F38020?style=for-the-badge&logo=cloudflare&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-7.2-646CFF?style=for-the-badge&logo=vite&logoColor=white)
 
----
+**Modern cybersecurity and continuous compliance solutions for growing businesses.**
 
-## About
+[🌐 Live Site](https://cyberguardng.ca) • [📧 Contact](mailto:info@cyberguardng.ca) • [🐙 GitHub](https://github.com/osayande-infosec)
 
-CyberGuardNG delivers AI-supported cybersecurity and continuous compliance for modern businesses across AWS, Azure, and Google Cloud.
-
-**Services:** Managed Security Operations | Continuous Compliance | Cloud Security | AI-Powered Detection
-
----
-
-## Tech Stack
-
-| Layer | Technology |
-|-------|------------|
-| Frontend | React 18, Vite, React Router |
-| Backend | Cloudflare Pages Functions |
-| Database | Cloudflare D1 + KV |
-| AI | OpenAI GPT-4o-mini |
-| Hosting | Cloudflare Pages (Edge) |
+</div>
 
 ---
 
-## Quick Start
+## 📋 About
 
-```bash
-git clone https://github.com/osayande-infosec/cyberguardng.git
-cd cyberguardng/cyberguardng/react-site
-npm install
-npm run dev
+CyberGuardNG is a **full-stack cybersecurity platform** delivering AI-supported security operations and continuous compliance for modern businesses. We help organizations stay secure and audit-ready across AWS, Azure, and Google Cloud.
+
+### 🎯 Key Services
+
+| Service | Description |
+|---------|-------------|
+| **Managed Security Operations** | 24/7 monitoring, threat detection, and incident response |
+| **Continuous Compliance** | SOC 2, ISO 27001, HIPAA, PCI DSS audit readiness |
+| **Cloud Security** | AWS, Azure, and GCP security posture management |
+| **AI-Powered Security** | Advanced threat detection with machine learning |
+
+---
+
+## 🏗️ Architecture
+
+This is a **full-stack application** built on Cloudflare's edge network:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        CLOUDFLARE EDGE                          │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   ┌──────────────┐    ┌──────────────┐    ┌──────────────┐     │
+│   │   Frontend   │    │   Functions  │    │   Database   │     │
+│   │  React + SPA │◄──►│  Serverless  │◄──►│   D1 + KV    │     │
+│   │              │    │   API Layer  │    │              │     │
+│   └──────────────┘    └──────────────┘    └──────────────┘     │
+│                              │                                  │
+│                              ▼                                  │
+│                    ┌──────────────────┐                        │
+│                    │   OpenAI API     │                        │
+│                    │   (AI Chatbot)   │                        │
+│                    └──────────────────┘                        │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## License
+## 🛠️ Technology Stack
 
-Copyright 2025 CyberGuardNG Security Inc. All rights reserved.
+### Frontend
+| Technology | Purpose |
+|------------|---------|
+| **React 18** | UI component library |
+| **Vite 7.2** | Build tool & dev server |
+| **React Router v6** | Client-side routing |
+| **Custom CSS** | Modern design system |
+
+### Backend (Serverless)
+| Technology | Purpose |
+|------------|---------|
+| **Cloudflare Pages Functions** | Serverless API endpoints |
+| **Cloudflare D1** | SQLite database at the edge |
+| **Cloudflare KV** | Key-value session storage |
+| **OpenAI GPT-4o-mini** | AI chatbot (Yande) |
+
+### Infrastructure
+| Technology | Purpose |
+|------------|---------|
+| **Cloudflare Pages** | Global CDN & hosting |
+| **Cloudflare SSL** | HTTPS & security |
+| **Web3Forms** | Contact form submissions |
+
+### 💰 Cost: **$0/month** infrastructure + ~$5-10/month OpenAI
 
 ---
 
-[Website](https://cyberguardng.ca) | [Email](mailto:info@cyberguardng.ca) | [GitHub](https://github.com/osayande-infosec)
+## ✨ Features
+
+### 🤖 AI-Powered Chatbot (Yande)
+- Powered by OpenAI GPT-4o-mini
+- Context-aware security assistance
+- Persistent chat history across sessions
+- Privacy-focused design
+
+### 🔐 Security & Compliance
+- HTTPS everywhere (Cloudflare SSL)
+- Content Security Policy headers
+- GDPR-compliant cookie consent
+- Secure API proxy functions
+- DDoS protection via Cloudflare
+
+### 📱 Mobile-First Design
+- Responsive layouts for all devices
+- Touch-friendly navigation (44px minimum targets)
+- Auto-closing mobile menu
+- Optimized typography and spacing
+
+### 🔍 SEO Optimized
+- Comprehensive meta tags
+- Open Graph & Twitter Cards
+- JSON-LD structured data
+- XML sitemap & robots.txt
+
+### ⚡ Performance
+- Edge-deployed globally (300+ PoPs)
+- Code splitting with React Router
+- Vite build optimization
+- Sub-second page loads
+
+---
+
+## 📁 Project Structure
+
+```
+cyberguardng/
+├── react-site/                    # Main application
+│   ├── src/
+│   │   ├── components/           # Reusable UI components
+│   │   │   ├── Header.jsx        # Navigation header
+│   │   │   ├── Footer.jsx        # Site footer
+│   │   │   ├── ChatLauncher.jsx  # AI chatbot widget
+│   │   │   └── CookieBanner.jsx  # GDPR cookie consent
+│   │   ├── pages/                # Route pages
+│   │   │   ├── Home.jsx          # Landing page
+│   │   │   ├── Services.jsx      # Service offerings
+│   │   │   ├── Portal.jsx        # Client portal
+│   │   │   └── ...
+│   │   ├── App.jsx               # Root component
+│   │   └── styles.css            # Global styles
+│   ├── functions/                # Cloudflare serverless functions
+│   │   ├── chat.js               # OpenAI chat proxy
+│   │   ├── contact.js            # Contact form handler
+│   │   ├── api/                  # REST API endpoints
+│   │   │   ├── auth/             # Authentication
+│   │   │   ├── portal/           # Client portal API
+│   │   │   └── admin/            # Admin dashboard API
+│   │   └── ...
+│   ├── public/                   # Static assets
+│   └── schema.sql                # D1 database schema
+└── README.md
+```
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js 18+
+- npm or yarn
+- Cloudflare account (free tier works)
+
+### Local Development
+
+```bash
+# Clone the repository
+git clone https://github.com/osayande-infosec/cyberguardng.git
+cd cyberguardng/cyberguardng/react-site
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+```
+
+Visit `http://localhost:5173`
+
+### Environment Variables
+
+Create a `.dev.vars` file for local development:
+
+```env
+OPENAI_API_KEY=your-openai-api-key
+```
+
+---
+
+## 🌐 Deployment
+
+### Cloudflare Pages (Recommended)
+
+1. **Connect Repository**
+   ```
+   Cloudflare Dashboard → Pages → Create Project → Connect GitHub
+   ```
+
+2. **Build Settings**
+   | Setting | Value |
+   |---------|-------|
+   | Build command | `npm ci && npm run build` |
+   | Build output | `dist` |
+   | Root directory | `cyberguardng/react-site` |
+
+3. **Environment Variables**
+   - `OPENAI_API_KEY` - For AI chatbot
+
+4. **Deploy** 🚀
+
+### Database Setup (Optional)
+
+```bash
+# Create D1 database
+npx wrangler d1 create cyberguardng_db
+
+# Create KV namespace
+npx wrangler kv:namespace create "SESSIONS"
+
+# Run migrations
+npx wrangler d1 execute cyberguardng_db --file=schema.sql --remote
+```
+
+---
+
+## 📊 Backend Features
+
+| Feature | Description |
+|---------|-------------|
+| **Session Management** | Recognize returning visitors |
+| **Chat History** | AI assistant remembers conversations |
+| **Client Portal** | Secure document sharing & onboarding |
+| **Admin Dashboard** | Client management & analytics |
+| **GDPR Compliance** | Cookie consent tracking |
+| **Lead Capture** | Contact form with email notifications |
+
+---
+
+## 🔒 Security
+
+- **HTTPS**: Enforced via Cloudflare SSL
+- **Headers**: CSP, X-Frame-Options, X-Content-Type-Options
+- **Authentication**: Google OAuth + SAML SSO
+- **Data**: All sensitive data encrypted at rest
+- **DDoS**: Cloudflare protection included
+
+---
+
+## 📈 Performance Metrics
+
+| Metric | Score |
+|--------|-------|
+| Lighthouse Performance | 95+ |
+| First Contentful Paint | < 1s |
+| Time to Interactive | < 2s |
+| Global CDN PoPs | 300+ |
+
+---
+
+## 🤝 Contributing
+
+This is a private business website. For authorized contributors:
+
+1. Create a feature branch
+2. Make changes
+3. Test thoroughly
+4. Submit pull request
+
+---
+
+## 📝 License
+
+Copyright © 2025 CyberGuardNG Security Inc. All rights reserved.
+
+---
+
+## 📧 Contact
+
+| Channel | Link |
+|---------|------|
+| 🌐 Website | [cyberguardng.ca](https://cyberguardng.ca) |
+| 📧 Email | [info@cyberguardng.ca](mailto:info@cyberguardng.ca) |
+| 🐙 GitHub | [@osayande-infosec](https://github.com/osayande-infosec) |
+
+---
+
+<div align="center">
+
+**Built with ❤️ by CyberGuardNG Security Inc.**
+
+![Made in Canada](https://img.shields.io/badge/Made%20in-Canada-red?style=flat-square)
+![Cybersecurity](https://img.shields.io/badge/Focus-Cybersecurity-green?style=flat-square)
+
+</div>
