@@ -1,0 +1,50 @@
+# Dependencies
+node_modules/
+.venv/
+
+# Build outputs
+dist/
+build/
+*.log
+
+# Environment files
+.env
+.env.local
+.env.*.local
+.dev.vars
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# ========================================
+# PRIVATE FILES - DO NOT COMMIT
+# ========================================
+
+# Private documentation & planning
+AUTHFORGE_DEMO_SCRIPT.md
+BACKEND_ARCHITECTURE.md
+CLOUDFLARE-DEPLOYMENT.md
+CONTACT-FORM-SETUP.md
+SAML_IMPLEMENTATION_PLAN.md
+SECURITY_TESTING_PLAN.md
+SECURITY_TOOLS_SETUP.md
+VERIFY-OPENAI.md
+cyberguardng/react-site/VOICE-AGENT-SETUP.md
+
+# Private scripts
+lighthouse-audit.ps1
+security-scan.ps1
+make_call.py
+voice_webhook.py
+
+# Any future private docs
+*_PLAN.md
+*_SETUP.md
+*_SCRIPT.md
