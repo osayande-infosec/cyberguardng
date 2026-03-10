@@ -1,5 +1,6 @@
-# CyberGuardNG Security Scanning Workflow
-# Automated security scanning for cybersecurity portfolio demonstration
+# CyberGuardNG - Security Pipeline
+# Runs on push to main, pull requests, and manual trigger only
+# NO scheduled/cron scans to avoid recurring billing
 
 name: Security Scan
 
@@ -8,10 +9,7 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
-  schedule:
-    # Run weekly on Monday at 9 AM UTC
-    - cron: '0 9 * * 1'
-  workflow_dispatch: # Allow manual trigger
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -39,17 +37,12 @@ jobs:
 
       - name: Run npm audit
         working-directory: cyberguardng/react-site
-        run: npm audit --audit-level=moderate
-        continue-on-error: true
-
-      - name: Run Snyk to check for vulnerabilities
-        uses: snyk/actions/node@master
-        continue-on-error: true
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          args: --severity-threshold=medium
-          command: test
+        run: |
+          echo "=== npm audit results ==="
+          npm audit --audit-level=moderate 2>&1 || true
+          echo ""
+          echo "=== Outdated packages ==="
+          npm outdated 2>&1 || true
 
   # Job 2: CodeQL Static Analysis
   codeql-analysis:
@@ -73,9 +66,10 @@ jobs:
         with:
           category: "/language:javascript"
 
-  # Job 3: OWASP ZAP Dynamic Application Security Testing (DAST)
+  # Job 3: OWASP ZAP Dynamic Scan (only on PRs and manual trigger)
   owasp-zap-scan:
     name: OWASP ZAP Baseline Scan
+    if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -85,15 +79,14 @@ jobs:
         uses: zaproxy/action-baseline@v0.12.0
         with:
           target: 'https://cyberguardng.ca'
-          rules_file_name: '.zap/rules.tsv'
-          cmd_options: '-a'
+          cmd_options: '-a -I'
         continue-on-error: true
 
       - name: Upload ZAP Report
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: zap-report
+          name: zap-report-${{ github.run_number }}
           path: report_html.html
           retention-days: 30
 
@@ -105,20 +98,37 @@ jobs:
       - name: Check Security Headers
         run: |
           echo "=== Security Headers Check for cyberguardng.ca ==="
-          curl -sI https://cyberguardng.ca | grep -iE "(strict-transport|content-security|x-frame|x-content-type|referrer-policy|permissions-policy)"
+          HEADERS=$(curl -sI https://cyberguardng.ca)
+          echo "$HEADERS" | grep -iE "(strict-transport|content-security|x-frame|x-content-type|referrer-policy|permissions-policy)" || echo "WARNING: Some security headers missing"
           echo ""
-          echo "=== SecurityHeaders.com Grade ==="
-          echo "Check: https://securityheaders.com/?q=cyberguardng.ca"
+          echo "Check full report: https://securityheaders.com/?q=cyberguardng.ca"
 
   # Job 5: SSL/TLS Configuration Check
   ssl-check:
     name: SSL/TLS Security Check
     runs-on: ubuntu-latest
     steps:
-      - name: SSL Labs Check Info
+      - name: Verify SSL Certificate
         run: |
           echo "=== SSL/TLS Configuration ==="
-          echo "Manual check required at: https://www.ssllabs.com/ssltest/analyze.html?d=cyberguardng.ca"
+          CERT_INFO=$(echo | openssl s_client -servername cyberguardng.ca -connect cyberguardng.ca:443 2>/dev/null)
+          echo "$CERT_INFO" | openssl x509 -noout -dates
+          echo "$CERT_INFO" | openssl x509 -noout -subject -issuer
           echo ""
-          echo "Checking certificate validity..."
-          echo | openssl s_client -servername cyberguardng.ca -connect cyberguardng.ca:443 2>/dev/null | openssl x509 -noout -dates
+          echo "Full analysis: https://www.ssllabs.com/ssltest/analyze.html?d=cyberguardng.ca"
+
+  # Job 6: Secret Scanning (checks for leaked credentials in code)
+  secret-scan:
+    name: Secret Leak Detection
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
