@@ -40,8 +40,8 @@ export default function PortalLogin() {
   function handleSSOLogin() {
     setLoading(true);
     setError("");
-    // Redirect to SAML SSO endpoint
-    window.location.href = "/api/auth/saml/login";
+    // Redirect to the WorkOS-brokered enterprise SSO endpoint
+    window.location.href = "/api/auth/workos/login";
   }
 
   return (

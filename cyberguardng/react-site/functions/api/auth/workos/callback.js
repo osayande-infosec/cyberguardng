@@ -1,5 +1,11 @@
-// Google OAuth Callback - Handles the response from Google
-// Exchanges code for tokens and creates session
+// Enterprise SSO callback - Handles the response from WorkOS
+//
+// WorkOS has already completed and verified the SAML/OIDC exchange with the
+// customer's IdP by the time this runs — the `code` here is a WorkOS-issued
+// authorization code, not an IdP assertion. Exchanging it for a profile is
+// the entire replacement for what used to be hand-rolled XML parsing and
+// (missing) signature verification. This app trusts WorkOS's verification,
+// the same way it already trusts Google's for the Google login path.
 
 import { createSessionToken, getSessionSecret, parseCookies } from "../../lib/session.js";
 
@@ -9,7 +15,6 @@ export async function onRequestGet(context) {
   const state = url.searchParams.get("state");
   const error = url.searchParams.get("error");
 
-  // Handle OAuth errors
   if (error) {
     return Response.redirect(
       `${url.origin}/portal/login?error=${encodeURIComponent(error)}`,
@@ -17,11 +22,10 @@ export async function onRequestGet(context) {
     );
   }
 
-  // Validate state (CSRF protection). A missing cookie is not a reason to
-  // skip the check — it's the exact condition a cross-site attacker who
-  // doesn't send the cookie would produce, so it fails closed.
+  // Fails closed on a missing cookie, same as the Google callback — a
+  // cross-site attacker who doesn't send the cookie must not slip through.
   const cookies = parseCookies(context.request.headers.get("Cookie") || "");
-  const storedState = cookies.oauth_state;
+  const storedState = cookies.workos_state;
 
   if (!state || !storedState || state !== storedState) {
     return Response.redirect(
@@ -37,13 +41,13 @@ export async function onRequestGet(context) {
     );
   }
 
-  const GOOGLE_CLIENT_ID = context.env.GOOGLE_CLIENT_ID;
-  const GOOGLE_CLIENT_SECRET = context.env.GOOGLE_CLIENT_SECRET;
+  const WORKOS_CLIENT_ID = context.env.WORKOS_CLIENT_ID;
+  const WORKOS_API_KEY = context.env.WORKOS_API_KEY;
   const SESSION_SECRET = getSessionSecret(context.env);
 
-  if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
+  if (!WORKOS_CLIENT_ID || !WORKOS_API_KEY) {
     return Response.redirect(
-      `${url.origin}/portal/login?error=${encodeURIComponent("OAuth not configured")}`,
+      `${url.origin}/portal/login?error=${encodeURIComponent("Enterprise SSO not configured")}`,
       302
     );
   }
@@ -57,77 +61,72 @@ export async function onRequestGet(context) {
   }
 
   try {
-    // Exchange code for tokens
-    const tokenResponse = await fetch("https://oauth2.googleapis.com/token", {
+    // Exchange the code for the verified profile WorkOS obtained from the
+    // customer's IdP. WORKOS_API_KEY authenticates this server-to-server
+    // call; it's never sent to or readable by the browser.
+    const tokenResponse = await fetch("https://api.workos.com/sso/token", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams({
-        code,
-        client_id: GOOGLE_CLIENT_ID,
-        client_secret: GOOGLE_CLIENT_SECRET,
-        redirect_uri: `${url.origin}/api/auth/google/callback`,
-        grant_type: "authorization_code"
+        client_id: WORKOS_CLIENT_ID,
+        client_secret: WORKOS_API_KEY,
+        grant_type: "authorization_code",
+        code
       })
     });
 
-    const tokens = await tokenResponse.json();
-
-    if (tokens.error) {
-      console.error("Token error:", tokens);
+    if (!tokenResponse.ok) {
+      const text = await tokenResponse.text();
+      console.error("WorkOS token exchange failed:", tokenResponse.status, text);
       return Response.redirect(
-        `${url.origin}/portal/login?error=${encodeURIComponent(tokens.error_description || tokens.error)}`,
+        `${url.origin}/portal/login?error=${encodeURIComponent("SSO authentication failed")}`,
         302
       );
     }
 
-    // Get user info from Google
-    const userResponse = await fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
-      headers: { Authorization: `Bearer ${tokens.access_token}` }
-    });
+    const data = await tokenResponse.json();
+    const profile = data.profile;
 
-    const googleUser = await userResponse.json();
-
-    if (!googleUser.email) {
+    if (!profile || !profile.email) {
       return Response.redirect(
         `${url.origin}/portal/login?error=${encodeURIComponent("Could not get user information")}`,
         302
       );
     }
 
-    // Create session data
+    const name =
+      [profile.first_name, profile.last_name].filter(Boolean).join(" ") ||
+      profile.email.split("@")[0];
+
     const sessionData = {
-      email: googleUser.email,
-      name: googleUser.name || googleUser.email.split("@")[0],
-      picture: googleUser.picture || null,
-      provider: "google",
-      providerId: googleUser.id,
+      email: profile.email,
+      name,
+      picture: null,
+      provider: "workos",
+      providerId: profile.id,
+      connectionType: profile.connection_type || null,
       loginAt: new Date().toISOString(),
       expiresAt: new Date(Date.now() + 8 * 60 * 60 * 1000).toISOString() // 8 hours
     };
 
-    // Create signed session token
     const sessionToken = await createSessionToken(sessionData, SESSION_SECRET);
 
-    // Redirect to portal with session cookie
     const response = Response.redirect(`${url.origin}/portal`, 302);
     const headers = new Headers(response.headers);
 
-    // Set session cookie
     headers.append(
       "Set-Cookie",
       `session=${sessionToken}; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=28800`
     );
-
-    // Clear OAuth state cookie
     headers.append(
       "Set-Cookie",
-      `oauth_state=; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=0`
+      `workos_state=; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=0`
     );
 
     return new Response(null, { status: 302, headers });
 
-  } catch (error) {
-    console.error("OAuth callback error:", error);
+  } catch (err) {
+    console.error("WorkOS callback error:", err);
     return Response.redirect(
       `${url.origin}/portal/login?error=${encodeURIComponent("Authentication failed")}`,
       302

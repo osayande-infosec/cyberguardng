@@ -1,15 +1,17 @@
 // Session endpoint - Check if user is authenticated
 
+import { getSessionSecret, parseCookies, verifySessionToken } from "../lib/session.js";
+
 export async function onRequestGet(context) {
-  const SESSION_SECRET = context.env.SESSION_SECRET || "default-secret-change-me";
+  const SESSION_SECRET = getSessionSecret(context.env);
   const cookies = parseCookies(context.request.headers.get("Cookie") || "");
   const sessionToken = cookies.session;
 
-  if (!sessionToken) {
+  if (!SESSION_SECRET || !sessionToken) {
     return new Response(
       JSON.stringify({ authenticated: false }),
-      { 
-        status: 200, 
+      {
+        status: 200,
         headers: { "Content-Type": "application/json" }
       }
     );
@@ -18,12 +20,12 @@ export async function onRequestGet(context) {
   try {
     // Verify and decode session
     const sessionData = await verifySessionToken(sessionToken, SESSION_SECRET);
-    
+
     if (!sessionData) {
       return new Response(
         JSON.stringify({ authenticated: false, error: "Invalid session" }),
-        { 
-          status: 200, 
+        {
+          status: 200,
           headers: { "Content-Type": "application/json" }
         }
       );
@@ -33,8 +35,8 @@ export async function onRequestGet(context) {
     if (new Date(sessionData.expiresAt) < new Date()) {
       return new Response(
         JSON.stringify({ authenticated: false, error: "Session expired" }),
-        { 
-          status: 200, 
+        {
+          status: 200,
           headers: { "Content-Type": "application/json" }
         }
       );
@@ -51,8 +53,8 @@ export async function onRequestGet(context) {
           provider: sessionData.provider
         }
       }),
-      { 
-        status: 200, 
+      {
+        status: 200,
         headers: { "Content-Type": "application/json" }
       }
     );
@@ -61,72 +63,10 @@ export async function onRequestGet(context) {
     console.error("Session verification error:", error);
     return new Response(
       JSON.stringify({ authenticated: false, error: "Session verification failed" }),
-      { 
-        status: 200, 
+      {
+        status: 200,
         headers: { "Content-Type": "application/json" }
       }
     );
   }
-}
-
-// Helper: Parse cookies from header
-function parseCookies(cookieHeader) {
-  const cookies = {};
-  cookieHeader.split(";").forEach(cookie => {
-    const [name, value] = cookie.trim().split("=");
-    if (name && value) {
-      cookies[name] = value;
-    }
-  });
-  return cookies;
-}
-
-// Helper: Verify signed session token
-async function verifySessionToken(token, secret) {
-  try {
-    const [payloadBase64, signatureBase64] = token.split(".");
-    
-    if (!payloadBase64 || !signatureBase64) {
-      console.log("Token missing parts");
-      return null;
-    }
-
-    const encoder = new TextEncoder();
-    
-    // Verify signature
-    const key = await crypto.subtle.importKey(
-      "raw",
-      encoder.encode(secret),
-      { name: "HMAC", hash: "SHA-256" },
-      false,
-      ["verify"]
-    );
-
-    const signature = Uint8Array.from(base64UrlDecode(signatureBase64), c => c.charCodeAt(0));
-    const isValid = await crypto.subtle.verify("HMAC", key, signature, encoder.encode(payloadBase64));
-
-    if (!isValid) {
-      console.log("Signature verification failed");
-      return null;
-    }
-
-    // Decode payload
-    const payload = JSON.parse(base64UrlDecode(payloadBase64));
-    return payload;
-
-  } catch (error) {
-    console.error("Token verification error:", error);
-    return null;
-  }
-}
-
-// Helper: URL-safe base64 decoding
-function base64UrlDecode(str) {
-  // Add padding if needed
-  let base64 = str.replace(/-/g, '+').replace(/_/g, '/');
-  const padding = base64.length % 4;
-  if (padding) {
-    base64 += '='.repeat(4 - padding);
-  }
-  return decodeURIComponent(escape(atob(base64)));
 }

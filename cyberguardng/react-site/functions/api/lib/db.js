@@ -1,6 +1,8 @@
 // Database helper functions for D1
 // Shared utilities for all API endpoints
 
+import { getSessionSecret, parseCookies, verifySessionToken } from "./session.js";
+
 // Generate a UUID
 export function generateId() {
   return crypto.randomUUID();
@@ -13,7 +15,11 @@ export function now() {
 
 // Verify user session and get user data
 export async function getAuthenticatedUser(context) {
-  const SESSION_SECRET = context.env.SESSION_SECRET || "default-secret-change-me";
+  const SESSION_SECRET = getSessionSecret(context.env);
+  if (!SESSION_SECRET) {
+    return null;
+  }
+
   const cookies = parseCookies(context.request.headers.get("Cookie") || "");
   const sessionToken = cookies.session;
 
@@ -77,61 +83,6 @@ export async function logActivity(db, { organizationId, userId, action, resource
     console.error('Failed to log activity:', error);
     // Don't throw - activity logging shouldn't break main operations
   }
-}
-
-// Helper: Parse cookies from header
-function parseCookies(cookieHeader) {
-  const cookies = {};
-  cookieHeader.split(";").forEach(cookie => {
-    const [name, value] = cookie.trim().split("=");
-    if (name && value) {
-      cookies[name] = value;
-    }
-  });
-  return cookies;
-}
-
-// Helper: Verify signed session token
-async function verifySessionToken(token, secret) {
-  try {
-    const [payloadBase64, signatureBase64] = token.split(".");
-    
-    if (!payloadBase64 || !signatureBase64) {
-      return null;
-    }
-
-    const encoder = new TextEncoder();
-    
-    const key = await crypto.subtle.importKey(
-      "raw",
-      encoder.encode(secret),
-      { name: "HMAC", hash: "SHA-256" },
-      false,
-      ["verify"]
-    );
-
-    const signature = Uint8Array.from(base64UrlDecode(signatureBase64), c => c.charCodeAt(0));
-    const isValid = await crypto.subtle.verify("HMAC", key, signature, encoder.encode(payloadBase64));
-
-    if (!isValid) {
-      return null;
-    }
-
-    const payload = JSON.parse(base64UrlDecode(payloadBase64));
-    return payload;
-
-  } catch {
-    return null;
-  }
-}
-
-function base64UrlDecode(str) {
-  let base64 = str.replace(/-/g, '+').replace(/_/g, '/');
-  const padding = base64.length % 4;
-  if (padding) {
-    base64 += '='.repeat(4 - padding);
-  }
-  return decodeURIComponent(escape(atob(base64)));
 }
 
 // JSON response helper
