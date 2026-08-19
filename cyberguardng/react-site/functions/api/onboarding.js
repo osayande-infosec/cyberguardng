@@ -89,27 +89,29 @@ export async function onRequestPost(context) {
 }
 
 // GET - Get request status (for users to check their status)
+// Keyed by requestId, not email: email is guessable and would let anyone
+// enumerate who has applied, their company name, and their status. requestId
+// is the crypto.randomUUID() returned from the POST above, which only the
+// applicant has.
 export async function onRequestGet(context) {
   const db = context.env.DB;
   const url = new URL(context.request.url);
-  const email = url.searchParams.get("email");
-  
+  const requestId = url.searchParams.get("requestId");
+
   if (!db) {
     return errorResponse("Database not configured", 500);
   }
 
-  if (!email) {
-    return errorResponse("Email required", 400);
+  if (!requestId) {
+    return errorResponse("requestId required", 400);
   }
 
   try {
     const request = await db.prepare(`
-      SELECT id, company_name, status, created_at 
-      FROM onboarding_requests 
-      WHERE email = ? 
-      ORDER BY created_at DESC 
-      LIMIT 1
-    `).bind(email).first();
+      SELECT id, company_name, status, created_at
+      FROM onboarding_requests
+      WHERE id = ?
+    `).bind(requestId).first();
 
     if (!request) {
       return jsonResponse({ found: false });
